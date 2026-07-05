@@ -2,220 +2,350 @@
 <html lang="nl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Platen">
 <title>🎵 Platencollectie</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0a0a0a;color:#fff;min-height:100vh}
-header{background:#111;position:sticky;top:0;z-index:100;border-bottom:2px solid #c0392b;box-shadow:0 4px 24px rgba(0,0,0,.6);padding:12px 14px 0}
-.header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-.logo{display:flex;align-items:center;gap:10px}
-.logo-titel{font-size:18px;font-weight:700}
-.logo-titel span{color:#c0392b}
-.teller{font-size:12px;color:#d4ac0d;font-weight:700;background:rgba(212,172,13,.12);padding:4px 10px;border-radius:20px;border:1px solid rgba(212,172,13,.3)}
-.zoek-wrap{position:relative;margin-bottom:8px}
-.zoek-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:15px;pointer-events:none}
-#zoekInput{width:100%;padding:10px 36px;background:#1e1e1e;border:1.5px solid #2a2a2a;border-radius:12px;color:#fff;font-size:16px;outline:none}
-#zoekInput:focus{border-color:#c0392b}
-.zoek-clear{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:#555;font-size:17px;cursor:pointer;padding:4px;display:none}
-.chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;scrollbar-width:none}
-.chips::-webkit-scrollbar{display:none}
-.chip{padding:5px 12px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;border:1.5px solid #2a2a2a;background:transparent;color:#777;transition:all .15s}
-.chip.actief{background:#c0392b;border-color:#c0392b;color:#fff}
-.tabs{display:flex;gap:2px}
-.tab{padding:8px 16px;border-radius:8px 8px 0 0;font-size:13px;font-weight:700;cursor:pointer;border:none;background:transparent;color:#555;border-bottom:2px solid transparent;transition:all .15s}
-.tab.actief{color:#fff;border-bottom-color:#c0392b;background:rgba(192,57,43,.15)}
-main{padding:10px 12px 80px}
-.sectie-hdr{font-size:11px;font-weight:700;color:#555;letter-spacing:1px;text-transform:uppercase;padding:10px 2px 4px}
-.kaart{background:#151515;border-radius:12px;margin-bottom:7px;border:1px solid #222;overflow:hidden;cursor:pointer;transition:border-color .2s}
-.kaart.open{border-color:#c0392b}
-.kaart-hoofd{display:flex;align-items:center;padding:11px 13px;gap:11px}
-.plaat-info{flex:1;min-width:0}
-.plaat-titel{font-size:14px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3}
-.plaat-artiest{font-size:12px;color:#d4ac0d;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.plaat-meta{display:flex;gap:5px;margin-top:4px;flex-wrap:wrap}
-.badge{font-size:10px;padding:2px 7px;border-radius:10px;font-weight:700}
-.badge-jaar{background:#1e1e1e;color:#888}
-.badge-formaat{background:rgba(192,57,43,.2);color:#e74c3c}
-.badge-land{background:#1e1e1e;color:#666}
-.staat-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
-.detail{display:none;padding:0 13px 13px;border-top:1px solid #1e1e1e}
-.kaart.open .detail{display:block}
-.detail-rij{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #1a1a1a;font-size:13px}
-.detail-rij:last-of-type{border-bottom:none}
-.detail-label{color:#666}
-.detail-waarde{color:#ddd;font-weight:500;text-align:right;max-width:60%}
-.staat-pill{padding:2px 10px;border-radius:10px;font-size:11px;font-weight:700}
-.verwijder-btn{width:100%;margin-top:10px;padding:8px;background:#1a0a0a;border:1px solid #4a1a1a;border-radius:8px;color:#e74c3c;font-size:12px;font-weight:700;cursor:pointer}
-.leeg{text-align:center;padding:60px 20px;color:#555}
-.form-veld{margin-bottom:12px}
-.form-label{display:block;font-size:11px;font-weight:700;color:#666;margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px}
-.form-input{width:100%;padding:11px 12px;background:#1e1e1e;border:1.5px solid #2a2a2a;border-radius:10px;color:#fff;font-size:15px;outline:none;-webkit-appearance:none}
-.form-input:focus{border-color:#c0392b}
-.form-rij{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.opslaan-btn{width:100%;margin-top:8px;padding:14px;background:#c0392b;border:none;border-radius:12px;color:#fff;font-size:16px;font-weight:700;cursor:pointer}
-.opslaan-btn:active{background:#a93226}
-.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(20px);background:#222;color:#fff;padding:10px 20px;border-radius:20px;font-size:13px;font-weight:600;opacity:0;transition:all .3s;z-index:999;white-space:nowrap;pointer-events:none;border:1px solid #333}
-.toast.toon{opacity:1;transform:translateX(-50%) translateY(0)}
+:root {
+  --bg: #080808;
+  --surface: #111114;
+  --surface2: #1a1a1f;
+  --border: #222228;
+  --rood: #c0392b;
+  --rood2: #e74c3c;
+  --goud: #d4ac0d;
+  --wit: #ffffff;
+  --grijs: #888;
+  --groen: #27ae60;
+  --blauw: #2980b9;
+  --geel: #e67e22;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif; background: var(--bg); color: var(--wit); min-height: 100vh; overflow-x: hidden; }
+
+/* HEADER */
+header { background: var(--surface); position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--border); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); padding: 14px 16px 0; }
+.header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.logo { display: flex; align-items: center; gap: 10px; }
+.logo svg { flex-shrink: 0; }
+.logo-naam { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; }
+.logo-naam span { color: var(--rood); }
+.teller-pill { font-size: 12px; color: var(--goud); font-weight: 700; background: rgba(212,172,13,0.12); padding: 5px 12px; border-radius: 20px; border: 1px solid rgba(212,172,13,0.25); }
+
+/* ZOEK */
+.zoek-wrap { position: relative; margin-bottom: 10px; }
+.zoek-input { width: 100%; padding: 11px 42px 11px 42px; background: var(--surface2); border: 1.5px solid var(--border); border-radius: 14px; color: var(--wit); font-size: 16px; outline: none; transition: border-color 0.2s; }
+.zoek-input:focus { border-color: var(--rood); }
+.zoek-input::placeholder { color: #444; }
+.zoek-icon { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); font-size: 16px; pointer-events: none; }
+.zoek-clear { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: #333; border: none; color: #aaa; font-size: 13px; cursor: pointer; width: 22px; height: 22px; border-radius: 50%; display: none; align-items: center; justify-content: center; font-weight: 700; }
+
+/* CHIPS */
+.chips { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: none; }
+.chips::-webkit-scrollbar { display: none; }
+.chip { padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; cursor: pointer; white-space: nowrap; border: 1.5px solid var(--border); background: transparent; color: var(--grijs); transition: all 0.15s; }
+.chip.actief { background: var(--rood); border-color: var(--rood); color: #fff; }
+
+/* TABS */
+.tabs { display: flex; gap: 0; border-bottom: none; }
+.tab { flex: 1; padding: 10px 6px; font-size: 12px; font-weight: 700; cursor: pointer; border: none; background: transparent; color: #555; border-bottom: 2px solid transparent; transition: all 0.15s; letter-spacing: 0.2px; }
+.tab.actief { color: var(--wit); border-bottom-color: var(--rood); }
+
+/* SCANNER KNOP */
+.scan-bar { display: flex; gap: 8px; padding: 10px 0 12px; }
+.scan-btn { flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 11px; background: var(--rood); border: none; border-radius: 14px; color: #fff; font-size: 14px; font-weight: 700; cursor: pointer; transition: background 0.2s; }
+.scan-btn:active { background: #a93226; }
+.add-btn { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 11px 16px; background: var(--surface2); border: 1.5px solid var(--border); border-radius: 14px; color: var(--grijs); font-size: 14px; font-weight: 700; cursor: pointer; }
+
+/* MAIN */
+main { padding: 8px 12px 90px; }
+
+/* STATS BANNER */
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
+.stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 12px; text-align: center; }
+.stat-num { font-size: 22px; font-weight: 800; color: var(--wit); }
+.stat-lbl { font-size: 10px; color: var(--grijs); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+
+/* PLAAT KAART */
+.sectie-hdr { font-size: 11px; font-weight: 800; color: #444; letter-spacing: 1.2px; text-transform: uppercase; padding: 12px 2px 5px; }
+.kaart { background: var(--surface); border-radius: 16px; margin-bottom: 8px; border: 1px solid var(--border); overflow: hidden; cursor: pointer; transition: all 0.2s; }
+.kaart:active { transform: scale(0.985); opacity: 0.9; }
+.kaart.open { border-color: var(--rood); box-shadow: 0 0 0 1px var(--rood); }
+.kaart-hoofd { display: flex; align-items: center; padding: 12px 14px; gap: 13px; }
+
+/* VINYL SCHIJF */
+.vinyl { width: 52px; height: 52px; border-radius: 50%; flex-shrink: 0; position: relative; }
+.vinyl svg { width: 100%; height: 100%; }
+
+/* INFO */
+.plaat-info { flex: 1; min-width: 0; }
+.plaat-titel { font-size: 15px; font-weight: 700; color: var(--wit); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.3; }
+.plaat-artiest { font-size: 12px; color: var(--goud); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 600; }
+.plaat-badges { display: flex; gap: 5px; margin-top: 5px; flex-wrap: wrap; }
+.badge { font-size: 10px; padding: 2px 8px; border-radius: 8px; font-weight: 700; }
+.b-jaar { background: #1e1e24; color: #777; }
+.b-formaat { background: rgba(192,57,43,0.18); color: #e74c3c; }
+.b-land { background: #1e1e24; color: #666; }
+
+/* STAAT DOT */
+.staat-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; box-shadow: 0 0 6px currentColor; }
+
+/* DETAIL PANEL */
+.detail { display: none; padding: 0 14px 14px; border-top: 1px solid var(--border); animation: slideIn 0.2s ease; }
+@keyframes slideIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+.kaart.open .detail { display: block; }
+.detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+.detail-blok { background: var(--surface2); border-radius: 10px; padding: 10px 12px; }
+.detail-lbl { font-size: 10px; color: var(--grijs); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 3px; }
+.detail-val { font-size: 13px; font-weight: 600; color: var(--wit); }
+.staat-pill { display: inline-block; padding: 3px 10px; border-radius: 10px; font-size: 11px; font-weight: 700; }
+.detail-opmerking { background: var(--surface2); border-radius: 10px; padding: 10px 12px; margin-bottom: 10px; font-size: 13px; color: #aaa; font-style: italic; }
+.verwijder-btn { width: 100%; padding: 9px; background: rgba(231,76,60,0.08); border: 1px solid rgba(231,76,60,0.3); border-radius: 10px; color: var(--rood2); font-size: 12px; font-weight: 700; cursor: pointer; }
+
+/* LEEG */
+.leeg { text-align: center; padding: 60px 20px; color: #444; }
+.leeg-icon { font-size: 52px; margin-bottom: 14px; }
+
+/* SCANNER MODAL */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 300; display: none; flex-direction: column; }
+.modal-overlay.open { display: flex; }
+.scanner-header { display: flex; align-items: center; justify-content: space-between; padding: 20px 20px 10px; }
+.scanner-titel { font-size: 18px; font-weight: 700; }
+.sluit-btn { background: #222; border: none; color: #aaa; width: 34px; height: 34px; border-radius: 50%; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+#scannerVideo { width: 100%; flex: 1; object-fit: cover; }
+.scanner-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; }
+.scan-frame { width: 260px; height: 160px; border: 2px solid var(--rood); border-radius: 12px; box-shadow: 0 0 0 9999px rgba(0,0,0,0.5); position: relative; }
+.scan-lijn { position: absolute; top: 50%; left: 0; right: 0; height: 2px; background: var(--rood); animation: scan 2s ease-in-out infinite; box-shadow: 0 0 8px var(--rood); }
+@keyframes scan { 0%,100% { top: 10%; } 50% { top: 90%; } }
+.scanner-status { padding: 16px 20px; text-align: center; font-size: 14px; color: #aaa; min-height: 60px; }
+
+/* TOEVOEGEN FORM */
+.form-sectie { padding-top: 8px; }
+.form-veld { margin-bottom: 12px; }
+.form-lbl { display: block; font-size: 11px; font-weight: 700; color: var(--grijs); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px; }
+.form-inp { width: 100%; padding: 12px 14px; background: var(--surface2); border: 1.5px solid var(--border); border-radius: 12px; color: var(--wit); font-size: 15px; outline: none; -webkit-appearance: none; transition: border-color 0.2s; }
+.form-inp:focus { border-color: var(--rood); }
+.form-rij { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.opslaan-btn { width: 100%; margin-top: 6px; padding: 15px; background: var(--rood); border: none; border-radius: 14px; color: #fff; font-size: 16px; font-weight: 800; cursor: pointer; transition: background 0.2s; letter-spacing: 0.3px; }
+.opslaan-btn:active { background: #a93226; }
+.scan-form-btn { width: 100%; margin-bottom: 16px; padding: 13px; background: var(--surface2); border: 1.5px solid var(--border); border-radius: 14px; color: var(--wit); font-size: 15px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+
+/* TOAST */
+.toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px); background: #1e1e1e; color: #fff; padding: 11px 22px; border-radius: 24px; font-size: 13px; font-weight: 700; opacity: 0; transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1); z-index: 999; white-space: nowrap; border: 1px solid #333; box-shadow: 0 8px 32px rgba(0,0,0,0.5); }
+.toast.toon { opacity: 1; transform: translateX(-50%) translateY(0); }
 </style>
 </head>
 <body>
+
 <header>
   <div class="header-top">
     <div class="logo">
-      <svg width="34" height="34" viewBox="0 0 44 44">
-        <circle cx="22" cy="22" r="21" fill="#111" stroke="#333" stroke-width="1.5"/>
-        <circle cx="22" cy="22" r="15" fill="#1a1a1a"/>
-        <circle cx="22" cy="22" r="9" fill="#111"/>
+      <svg width="36" height="36" viewBox="0 0 44 44">
+        <circle cx="22" cy="22" r="21" fill="#0a0a0a" stroke="#333" stroke-width="1.5"/>
+        <circle cx="22" cy="22" r="14" fill="#141414"/>
+        <circle cx="22" cy="22" r="8" fill="#0a0a0a"/>
         <circle cx="22" cy="22" r="4" fill="#c0392b"/>
-        <circle cx="22" cy="22" r="1.5" fill="#111"/>
+        <circle cx="22" cy="22" r="1.5" fill="#0a0a0a"/>
       </svg>
-      <span class="logo-titel">Platen<span>collectie</span></span>
+      <span class="logo-naam">Platen<span>collectie</span></span>
     </div>
-    <span class="teller" id="teller">50 platen</span>
+    <span class="teller-pill" id="teller">148 platen</span>
   </div>
   <div class="zoek-wrap">
     <span class="zoek-icon">🔍</span>
-    <input type="text" id="zoekInput" placeholder="Zoek artiest of titel…" autocomplete="off" autocorrect="off" spellcheck="false">
+    <input class="zoek-input" id="zoekInput" placeholder="Zoek artiest of titel…" autocomplete="off" autocorrect="off" spellcheck="false">
     <button class="zoek-clear" id="zoekClear" onclick="zoekWissen()">✕</button>
   </div>
   <div class="chips" id="chips"></div>
   <div class="tabs">
     <button class="tab actief" onclick="toonTab('collectie',this)">🎵 Collectie</button>
-    <button class="tab" onclick="toonTab('toevoegen',this)">+ Toevoegen</button>
+    <button class="tab" onclick="toonTab('toevoegen',this)">＋ Toevoegen</button>
   </div>
 </header>
 
+<!-- SCANNER MODAL -->
+<div class="modal-overlay" id="scannerModal">
+  <div class="scanner-header">
+    <span class="scanner-titel">📷 Scan barcode</span>
+    <button class="sluit-btn" onclick="sluitScanner()">✕</button>
+  </div>
+  <div style="position:relative;flex:1">
+    <video id="scannerVideo" autoplay playsinline muted></video>
+    <div class="scanner-overlay">
+      <div class="scan-frame"><div class="scan-lijn"></div></div>
+    </div>
+  </div>
+  <div class="scanner-status" id="scannerStatus">Richt de camera op de barcode van de platenhoes</div>
+</div>
+
 <main>
-  <div id="collectie"><div id="lijst"></div></div>
-  <div id="toevoegen" style="display:none;padding-top:8px">
-    <div class="form-rij">
-      <div class="form-veld"><label class="form-label">Artiest *</label><input class="form-input" id="f_artiest" placeholder="bijv. Pink Floyd"></div>
-      <div class="form-veld"><label class="form-label">Jaar</label><input class="form-input" id="f_jaar" type="number" placeholder="1979"></div>
-    </div>
-    <div class="form-veld"><label class="form-label">Titel *</label><input class="form-input" id="f_titel" placeholder="bijv. The Wall"></div>
-    <div class="form-rij">
-      <div class="form-veld"><label class="form-label">Formaat</label>
-        <select class="form-input" id="f_formaat"><option>LP</option><option>2xLP</option><option>EP</option><option>Single (7")</option><option>12" Single</option><option>Maxi-Single</option><option>Box Set</option><option>Overig</option></select>
+  <!-- COLLECTIE TAB -->
+  <div id="collectie">
+    <div class="stats" id="statsBar"></div>
+    <div id="lijst"></div>
+  </div>
+
+  <!-- TOEVOEGEN TAB -->
+  <div id="toevoegen" style="display:none" class="form-sectie">
+    <button class="scan-form-btn" onclick="openScanner()">📷 Scan barcode van platenhoes</button>
+    <div class="form-veld" style="margin-bottom:16px">
+      <label class="form-lbl">Of zoek op catalogusnummer</label>
+      <div style="display:flex;gap:8px">
+        <input class="form-inp" id="f_catno" placeholder="bijv. AMLH 63647" style="flex:1">
+        <button onclick="zoekOpCatno()" style="padding:12px 16px;background:#1a1a1f;border:1.5px solid #333;border-radius:12px;color:#fff;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap">🔎 Zoek</button>
       </div>
-      <div class="form-veld"><label class="form-label">Genre</label><input class="form-input" id="f_genre" placeholder="bijv. Rock"></div>
+      <div id="catnoResultaten" style="margin-top:8px"></div>
+    </div>
+    <div style="border-top:1px solid #222;margin:4px 0 16px;"></div>    <div class="form-rij">
+      <div class="form-veld"><label class="form-lbl">Artiest *</label><input class="form-inp" id="f_artiest" placeholder="bijv. Pink Floyd"></div>
+      <div class="form-veld"><label class="form-lbl">Jaar</label><input class="form-inp" id="f_jaar" type="number" placeholder="1979"></div>
+    </div>
+    <div class="form-veld"><label class="form-lbl">Titel *</label><input class="form-inp" id="f_titel" placeholder="bijv. The Wall"></div>
+    <div class="form-rij">
+      <div class="form-veld"><label class="form-lbl">Formaat</label>
+        <select class="form-inp" id="f_formaat"><option>LP</option><option>2xLP</option><option>EP</option><option>Single (7")</option><option>12" Single</option><option>Maxi-Single</option><option>Box Set</option><option>Overig</option></select>
+      </div>
+      <div class="form-veld"><label class="form-lbl">Genre</label><input class="form-inp" id="f_genre" placeholder="bijv. Rock"></div>
     </div>
     <div class="form-rij">
-      <div class="form-veld"><label class="form-label">Staat Vinyl</label>
-        <select class="form-input" id="f_staat_vinyl"><option>Mint (M)</option><option>Near Mint (NM)</option><option selected>Very Good Plus (VG+)</option><option>Very Good (VG)</option><option>Good Plus (G+)</option><option>Good (G)</option><option>Fair (F)</option><option>Poor (P)</option></select>
+      <div class="form-veld"><label class="form-lbl">Staat Vinyl</label>
+        <select class="form-inp" id="f_staat_vinyl"><option>Mint (M)</option><option>Near Mint (NM)</option><option selected>Very Good Plus (VG+)</option><option>Very Good (VG)</option><option>Good Plus (G+)</option><option>Good (G)</option><option>Fair (F)</option><option>Poor (P)</option></select>
       </div>
-      <div class="form-veld"><label class="form-label">Staat Hoes</label>
-        <select class="form-input" id="f_staat_hoes"><option>Mint (M)</option><option>Near Mint (NM)</option><option selected>Very Good Plus (VG+)</option><option>Very Good (VG)</option><option>Good Plus (G+)</option><option>Good (G)</option><option>Fair (F)</option><option>Poor (P)</option></select>
+      <div class="form-veld"><label class="form-lbl">Staat Hoes</label>
+        <select class="form-inp" id="f_staat_hoes"><option>Mint (M)</option><option>Near Mint (NM)</option><option selected>Very Good Plus (VG+)</option><option>Very Good (VG)</option><option>Good Plus (G+)</option><option>Good (G)</option><option>Fair (F)</option><option>Poor (P)</option></select>
       </div>
     </div>
     <div class="form-rij">
-      <div class="form-veld"><label class="form-label">Label / Nr.</label><input class="form-input" id="f_label" placeholder="bijv. EMI / EMC 3223"></div>
-      <div class="form-veld"><label class="form-label">Land</label><input class="form-input" id="f_land" placeholder="bijv. UK"></div>
+      <div class="form-veld"><label class="form-lbl">Label / Nr.</label><input class="form-inp" id="f_label" placeholder="bijv. EMI / EMC 3223"></div>
+      <div class="form-veld"><label class="form-lbl">Land</label><input class="form-inp" id="f_land" placeholder="bijv. UK"></div>
     </div>
-    <div class="form-veld"><label class="form-label">Opmerkingen</label><input class="form-input" id="f_opmerkingen" placeholder="bijv. originele persing"></div>
+    <div class="form-veld"><label class="form-lbl">Barcode</label><input class="form-inp" id="f_barcode" placeholder="5016958060916"></div>
+    <div class="form-veld"><label class="form-lbl">Opmerkingen</label><input class="form-inp" id="f_opmerkingen" placeholder="bijv. originele persing"></div>
+    <div class="form-veld">
+      <label class="form-lbl">Afbeelding URL (van Discogs)</label>
+      <input class="form-inp" id="f_afbeelding" placeholder="https://i.discogs.com/...">
+      <div style="font-size:11px;color:#555;margin-top:4px">Ga naar discogs.com, zoek je plaat, kopieer de link van de albumhoes</div>
+    </div>
     <button class="opslaan-btn" onclick="plaatOpslaan()">💾 Toevoegen aan collectie</button>
   </div>
 </main>
 
 <div class="toast" id="toast"></div>
 
-<script>
-const STAAT = {
-  "Mint (M)":             {k:"#27ae60",bg:"#0d2b1a"},
-  "Near Mint (NM)":       {k:"#2ecc71",bg:"#0d2b1a"},
-  "Very Good Plus (VG+)": {k:"#3498db",bg:"#0d1f2b"},
-  "Very Good (VG)":       {k:"#f39c12",bg:"#2b1f0d"},
-  "Good Plus (G+)":       {k:"#e67e22",bg:"#2b1500"},
-  "Good (G)":             {k:"#e74c3c",bg:"#2b0d0d"},
-  "Fair (F)":             {k:"#c0392b",bg:"#2b0d0d"},
-  "Poor (P)":             {k:"#922b21",bg:"#2b0d0d"},
-};
-function si(s){return STAAT[s]||{k:"#888",bg:"#222"}}
+<!-- ZXing barcode library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/zxing-js/0.18.6/index.min.js"></script>
 
-const INIT = [{"artiest": "Supertramp", "titel": "Crime of the Century", "jaar": 1974, "label": "A&M / AMLH 63647", "barcode": "5060454940878", "staat_vinyl": "Very Good Plus (VG+)", "staat_hoes": "Very Good Plus (VG+)", "formaat": "LP", "genre": "Rock", "land": "NL", "opmerkingen": "NL pressing, vlooienmarkt"}, {"artiest": "Pink Floyd", "titel": "The Wall", "jaar": 1979, "label": "Harvest / SHDW 411", "barcode": "", "staat_vinyl": "Near Mint (NM)", "staat_hoes": "Very Good (VG)", "formaat": "2xLP", "genre": "Rock", "land": "UK", "opmerkingen": "Originele 1979 persing"}, {"artiest": "Kate Bush", "titel": "The Kick Inside", "jaar": 1978, "label": "EMI / EMC 3223", "barcode": "", "staat_vinyl": "Very Good Plus (VG+)", "staat_hoes": "Very Good Plus (VG+)", "formaat": "LP", "genre": "Art Rock", "land": "UK", "opmerkingen": ""}, {"artiest": "Marillion", "titel": "Fugazi", "jaar": 1984, "label": "EMI / EMC 3507", "barcode": "", "staat_vinyl": "Very Good Plus (VG+)", "staat_hoes": "Very Good (VG)", "formaat": "LP", "genre": "Prog Rock", "land": "UK", "opmerkingen": "Fish era"}, {"artiest": "Supertramp", "titel": "Brother where you bound", "jaar": 1985, "label": "A&M / AMLH 63647", "barcode": "8283950141", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Rock", "land": "UK", "opmerkingen": ""}, {"artiest": "Supertramp", "titel": "Breakfast in America", "jaar": 1979, "label": "A&M / AMLH 63647", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Rock", "land": "UK", "opmerkingen": ""}, {"artiest": "Supertramp", "titel": "Famous last words", "jaar": 1982, "label": "a&M / AMLH 63732", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Rock", "land": "UK", "opmerkingen": ""}, {"artiest": "Supertramp", "titel": "Paris", "jaar": 1980, "label": "A&M / AMLH 66702", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Rock", "land": "UK", "opmerkingen": ""}, {"artiest": "ELO", "titel": "Discovery", "jaar": 1979, "label": "Jet records", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Rock", "land": "UK", "opmerkingen": ""}, {"artiest": "Deep purple", "titel": "24 Carat", "jaar": 1975, "label": "EMI / LC2546", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Hardrock", "land": "UK", "opmerkingen": ""}, {"artiest": "Deep Purple", "titel": "In concert", "jaar": 1980, "label": "EMI", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Hardrock", "land": "UK", "opmerkingen": ""}, {"artiest": "Robert Long", "titel": "Vroeger of later", "jaar": 1974, "label": "BOVEMA", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Nedderlandstalig", "land": "NL", "opmerkingen": ""}, {"artiest": "AC/DC", "titel": "If you want blood", "jaar": 1978, "label": "Atlantic", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Hardrock", "land": "AUS", "opmerkingen": ""}, {"artiest": "Andreas Vollenweider", "titel": "Behind the gardens, behind the waal, under the tree", "jaar": 1981, "label": "CBS", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Instrumentaal", "land": "SUI", "opmerkingen": ""}, {"artiest": "van Kooten en de Bie", "titel": "Op hun Pik getrapt", "jaar": 1980, "label": "STEMRA / SIMPELPEE", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Nederlandstalig", "land": "NL", "opmerkingen": ""}, {"artiest": "Iron Maiden", "titel": "Live in New York", "jaar": 2022, "label": "YELLOWIN RECORDS", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Hardrock", "land": "UK", "opmerkingen": ""}, {"artiest": "Roger Waters", "titel": "The pros and cons of hitch hiking", "jaar": 1984, "label": "EMI", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Rock", "land": "UK", "opmerkingen": ""}, {"artiest": "Fisher Z", "titel": "Word Salad", "jaar": 1979, "label": "EMI", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "SKA", "land": "UK", "opmerkingen": ""}, {"artiest": "The Alan Parsons Project", "titel": "Tales of mystery and Imagination by Edgar Allan Poe", "jaar": 1976, "label": "20th CENTURY RECORDS", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Symfonic rock", "land": "UK", "opmerkingen": ""}, {"artiest": "Fisher Z", "titel": "Red skies over paradise", "jaar": 1981, "label": "Liberty records", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "SKA", "land": "UK", "opmerkingen": ""}, {"artiest": "Marillion", "titel": "Grendel", "jaar": 1982, "label": "EMI", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "12\"", "genre": "Symfonic rock", "land": "UK", "opmerkingen": ""}, {"artiest": "Marillion", "titel": "Script for a Jesters tear", "jaar": 1983, "label": "EMI", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Symfonic rock", "land": "UK", "opmerkingen": ""}, {"artiest": "Marillion", "titel": "Fugazi", "jaar": 1984, "label": "EMI", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Symfonic rock", "land": "UK", "opmerkingen": ""}, {"artiest": "Marillion", "titel": "Real to reel", "jaar": 1984, "label": "EMI", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Symfonic rock", "land": "UK", "opmerkingen": ""}, {"artiest": "Marillion", "titel": "Kayleigh", "jaar": 1985, "label": "EMI", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "12\"", "genre": "Symfonic rock", "land": "UK", "opmerkingen": ""}, {"artiest": "Marillion", "titel": "Lavender", "jaar": 1985, "label": "EMI", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "12\"", "genre": "Symfonic rock", "land": "UK", "opmerkingen": ""}, {"artiest": "Iron Maiden", "titel": "The number of the beast", "jaar": 1982, "label": "EMI", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "12\"", "genre": "Hardrock", "land": "UK", "opmerkingen": ""}, {"artiest": "Iron Maiden", "titel": "Senjutsu", "jaar": 2021, "label": "EMI", "barcode": "", "staat_vinyl": "Very Good Plus (VG+)", "staat_hoes": "Very Good Plus (VG+)", "formaat": "LP", "genre": "Hardrock", "land": "UK", "opmerkingen": "180 grams"}, {"artiest": "Jeff Wayne", "titel": "War of the worlds", "jaar": 1978, "label": "CBS", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Symfonic rock", "land": "UK", "opmerkingen": ""}, {"artiest": "The Alan Parsons Project", "titel": "Ammonia Avenue", "jaar": 1984, "label": "Arista", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Symfonic rock", "land": "UK", "opmerkingen": ""}, {"artiest": "The Alan Parsons Project", "titel": "Eve", "jaar": 1979, "label": "Arista", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Symfonic rock", "land": "UK", "opmerkingen": ""}, {"artiest": "The Alan Parsons Project", "titel": "Pyramid", "jaar": 1978, "label": "Arista", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Symfonic rock", "land": "UK", "opmerkingen": ""}, {"artiest": "The Alan Parsons Project", "titel": "Eye in the sky", "jaar": 1982, "label": "Arista", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Symfonic rock", "land": "UK", "opmerkingen": ""}, {"artiest": "The Alan Parsons Project", "titel": "The turn of a friendly vard", "jaar": 1980, "label": "Arista", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Symfonic rock", "land": "UK", "opmerkingen": ""}, {"artiest": "Pink Floyd", "titel": "Atom heart mother", "jaar": 2016, "label": "Pink Floyd records", "barcode": "", "staat_vinyl": "Very Good Plus (VG+)", "staat_hoes": "Very Good Plus (VG+)", "formaat": "LP", "genre": "Symfonic rock", "land": "UK", "opmerkingen": "180 grams"}, {"artiest": "Pink Floyd", "titel": "Obscured by clouds", "jaar": 1972, "label": "EMI", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Symfonic rock", "land": "UK", "opmerkingen": ""}, {"artiest": "Pink Floyd", "titel": "Ummagumma", "jaar": 1969, "label": "EMI", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Symfonic rock", "land": "UK", "opmerkingen": ""}, {"artiest": "The Police", "titel": "Synchronicity", "jaar": 1983, "label": "A&M", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "New Wave", "land": "UK", "opmerkingen": ""}, {"artiest": "The Police", "titel": "Outlandos d'amour", "jaar": 1978, "label": "A&M", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "New Wave", "land": "UK", "opmerkingen": ""}, {"artiest": "van Kooten en de Bie", "titel": "Willen niet dood", "jaar": 1985, "label": "STEMRA / SIMPELPEE", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Nederlandstalig", "land": "NL", "opmerkingen": ""}, {"artiest": "Jon and Vangelis", "titel": "Short stories", "jaar": 1979, "label": "Polydor stemra", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Symfonic rock", "land": "UK", "opmerkingen": ""}, {"artiest": "ELO", "titel": "Eldorado", "jaar": 1974, "label": "Jet records", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Symfonic rock", "land": "UK", "opmerkingen": ""}, {"artiest": "Queen", "titel": "A day at the races", "jaar": 1976, "label": "Emi", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Rock", "land": "UK", "opmerkingen": ""}, {"artiest": "Supertramp", "titel": "Even in the quietest moments", "jaar": 1977, "label": "A&M", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Rock", "land": "UK", "opmerkingen": ""}, {"artiest": "Camel", "titel": "Nude", "jaar": 1981, "label": "Decca", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Symfonic rock", "land": "UK", "opmerkingen": ""}, {"artiest": "The Moody Blues", "titel": "This is the Moody Blues", "jaar": 1974, "label": "Stemra / Threshold", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Symfonic rock", "land": "UK", "opmerkingen": ""}, {"artiest": "Queen", "titel": "News of the World", "jaar": 1977, "label": "EMI", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Rock", "land": "UK", "opmerkingen": ""}, {"artiest": "Fleetwood Mac", "titel": "Rumours", "jaar": 1977, "label": "Warner Bros", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Rock", "land": "US", "opmerkingen": ""}, {"artiest": "The Eagles", "titel": "Hotel California", "jaar": 1976, "label": "Asylum", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Rock", "land": "US", "opmerkingen": ""}, {"artiest": "ELO", "titel": "Discovery", "jaar": 1979, "label": "Jet records", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Symfonic rock", "land": "UK", "opmerkingen": ""}, {"artiest": "Status Quo", "titel": "Whatever you want", "jaar": 1979, "label": "Phonogram", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Hardrock", "land": "UK", "opmerkingen": ""}, {"artiest": "Earth and Fire", "titel": "Reality fills Fantasy", "jaar": 1979, "label": "Vertigo", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Pop", "land": "NL", "opmerkingen": ""}, {"artiest": "Earth and Fire", "titel": "Greatest hits", "jaar": 1979, "label": "Phonogram", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Pop", "land": "NL", "opmerkingen": ""}, {"artiest": "Pink Floyd", "titel": "Animals", "jaar": 1977, "label": "EMI", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Symfonic rock", "land": "UK", "opmerkingen": ""}, {"artiest": "Pink Floyd", "titel": "Dark side of the Moon", "jaar": 1973, "label": "EMI", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Symfonic rock", "land": "UK", "opmerkingen": ""}, {"artiest": "Pink Floyd", "titel": "Wish you were Here", "jaar": 1975, "label": "EMI", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Symfonic rock", "land": "UK", "opmerkingen": ""}, {"artiest": "Pink Floyd", "titel": "Medlle", "jaar": 1971, "label": "EMI", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Symfonic rock", "land": "UK", "opmerkingen": ""}, {"artiest": "Pink Floyd", "titel": "The Wall", "jaar": 1979, "label": "EMI", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Symfonic rock", "land": "UK", "opmerkingen": ""}, {"artiest": "Pink Floyd", "titel": "The Final Cut", "jaar": 1983, "label": "EMI", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Symfonic rock", "land": "UK", "opmerkingen": ""}, {"artiest": "Queensryche", "titel": "The Warning", "jaar": 1984, "label": "EMI", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Hardrock", "land": "US", "opmerkingen": ""}, {"artiest": "Camel", "titel": "Moonmadness", "jaar": 1976, "label": "Passport Records", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Symfonic rock", "land": "UK", "opmerkingen": ""}, {"artiest": "Camel", "titel": "The Single Factor", "jaar": 1982, "label": "Passport Records", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Symfonic rock", "land": "UK", "opmerkingen": ""}, {"artiest": "Camel", "titel": "Pressure Points", "jaar": 1984, "label": "Polydor stemra", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Symfonic rock", "land": "UK", "opmerkingen": ""}, {"artiest": "Marillion", "titel": "Clutching at Straws", "jaar": 1987, "label": "EMI", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Symfonic rock", "land": "UK", "opmerkingen": ""}, {"artiest": "Simon and Garfunkel", "titel": "Live in Central Park", "jaar": 1981, "label": "Geffen Records", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Pop", "land": "US", "opmerkingen": ""}, {"artiest": "Laury Anderson", "titel": "Big Science", "jaar": 1982, "label": "Warner Bros", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Pop", "land": "US", "opmerkingen": ""}, {"artiest": "Magna Carta", "titel": "Lord of the Ages", "jaar": 1973, "label": "Vertigo", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Symfonic rock", "land": "UK", "opmerkingen": ""}, {"artiest": "Ilse deLange", "titel": "Gravel & Dust", "jaar": 2019, "label": "Universal", "barcode": "", "staat_vinyl": "Very Good Plus (VG+)", "staat_hoes": "Very Good Plus (VG+)", "formaat": "LP", "genre": "Pop", "land": "NL", "opmerkingen": ""}, {"artiest": "Mike Oldfield", "titel": "Tubular Bells", "jaar": 1973, "label": "Virgin", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Symfonic rock", "land": "UK", "opmerkingen": ""}, {"artiest": "Kiss", "titel": "Dynasty", "jaar": 1979, "label": "Casablanca", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Hardrock", "land": "US", "opmerkingen": ""}, {"artiest": "Joe Cocker", "titel": "Civilised man", "jaar": 1984, "label": "Capitol", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Pop", "land": "UK", "opmerkingen": ""}, {"artiest": "Frankie Goes to Hollywood", "titel": "Two Tribes", "jaar": 1984, "label": "Ariola", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "12\"", "genre": "Pop", "land": "UK", "opmerkingen": ""}, {"artiest": "Golden Earring", "titel": "Something heavy going down", "jaar": 1984, "label": "21 records", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Rock", "land": "NL", "opmerkingen": ""}, {"artiest": "Talk Talk", "titel": "It's my life", "jaar": 1984, "label": "EMI", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Pop", "land": "UK", "opmerkingen": ""}, {"artiest": "The Cure", "titel": "seventeen seconds", "jaar": 1980, "label": "Polydor stemra", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "New Wave", "land": "UK", "opmerkingen": ""}, {"artiest": "Ilse deLange", "titel": "Ilse deLange", "jaar": 2018, "label": "Universal", "barcode": "", "staat_vinyl": "Very Good Plus (VG+)", "staat_hoes": "Very Good Plus (VG+)", "formaat": "LP", "genre": "Pop", "land": "NL", "opmerkingen": ""}, {"artiest": "Kiss", "titel": "Love Gun", "jaar": 1977, "label": "Casablanca", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Hardrock", "land": "US", "opmerkingen": ""}, {"artiest": "Fleetwood Mac", "titel": "Tusk", "jaar": 1979, "label": "Warner Bros", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Rock", "land": "US", "opmerkingen": ""}, {"artiest": "Fleetwood Mac", "titel": "Mirage", "jaar": 1982, "label": "Warner Bros", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Rock", "land": "US", "opmerkingen": ""}, {"artiest": "Jon and Vangelis", "titel": "The Friends of mr. Cairo", "jaar": 1981, "label": "Polydor stemra", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Symfonic rock", "land": "US", "opmerkingen": ""}, {"artiest": "Supertramp", "titel": "Famous last Words", "jaar": 1982, "label": "A&M", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Rock", "land": "UK", "opmerkingen": ""}, {"artiest": "ELO", "titel": "Out of the Blue", "jaar": 1977, "label": "Jet records", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Symfonic rock", "land": "UK", "opmerkingen": ""}, {"artiest": "ELO", "titel": "Xanadu", "jaar": 1980, "label": "Jet records", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Symfonic rock", "land": "UK", "opmerkingen": ""}, {"artiest": "Fisher Z", "titel": "Going deaf for a living", "jaar": 1980, "label": "Universal", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "SKA", "land": "UK", "opmerkingen": ""}, {"artiest": "Japan", "titel": "Nightporter", "jaar": 1982, "label": "Virgin", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "12\"", "genre": "Pop", "land": "UK", "opmerkingen": ""}, {"artiest": "The Animals", "titel": "House of the rising Sun", "jaar": null, "label": "EMI", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Poor", "formaat": "LP", "genre": "Rock", "land": "UK", "opmerkingen": ""}, {"artiest": "Associates", "titel": "Those first Impressions", "jaar": 1984, "label": "Warner Bros", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "New Wave", "land": "UK", "opmerkingen": ""}, {"artiest": "Dire Straits", "titel": "Communique", "jaar": 1979, "label": "Warner Bros", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Rock", "land": "UK", "opmerkingen": ""}, {"artiest": "Dire Straits", "titel": "Dire Straits", "jaar": 1978, "label": "Vertigo", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Rock", "land": "UK", "opmerkingen": ""}, {"artiest": "Nina Hagen Band", "titel": "Nina Hagen Band", "jaar": 1978, "label": "CBS", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Punk", "land": "D", "opmerkingen": ""}, {"artiest": "Kate Bush", "titel": "The Kick Inside", "jaar": 1978, "label": "Emi", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Pop", "land": "UK", "opmerkingen": ""}, {"artiest": "Kate Bush", "titel": "Lionheart", "jaar": 1978, "label": "Emi", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Pop", "land": "UK", "opmerkingen": ""}, {"artiest": "Kate Bush", "titel": "Never for Ever", "jaar": 1980, "label": "Emi", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Pop", "land": "UK", "opmerkingen": ""}, {"artiest": "Kate Bush", "titel": "The Dreaming", "jaar": 1982, "label": "EMI", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Pop", "land": "UK", "opmerkingen": ""}, {"artiest": "Bronski Beat", "titel": "Why", "jaar": 1984, "label": "London Records", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "12\"", "genre": "Pop", "land": "UK", "opmerkingen": ""}, {"artiest": "Bronski Beat", "titel": "The age of Consent", "jaar": 1984, "label": "London Records", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Pop", "land": "UK", "opmerkingen": ""}, {"artiest": "Bronski Beat", "titel": "Smalltown Boy", "jaar": 1984, "label": "London Records", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "12\"", "genre": "Pop", "land": "UK", "opmerkingen": ""}, {"artiest": "Bots", "titel": "1975-1980", "jaar": 1980, "label": "Fontana", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Nederlandstalig", "land": "NL", "opmerkingen": ""}, {"artiest": "Foreigner", "titel": "Agent Provocateur", "jaar": 1984, "label": "Atlantic", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Rock", "land": "US", "opmerkingen": ""}, {"artiest": "Supertramp", "titel": "Live in Paris '79", "jaar": 2024, "label": "Universal", "barcode": "", "staat_vinyl": "Very Good Plus (VG+)", "staat_hoes": "Very Good Plus (VG+)", "formaat": "LP", "genre": "Rock", "land": "UK", "opmerkingen": ""}, {"artiest": "Thomas Dolby", "titel": "The Flat earth", "jaar": 1984, "label": "EMI", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "New Wave", "land": "UK", "opmerkingen": ""}, {"artiest": "Supertramp", "titel": "Crisis? What crisis", "jaar": 1975, "label": "A&M", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Rock", "land": "UK", "opmerkingen": ""}, {"artiest": "Muse", "titel": "Will of the People", "jaar": 2022, "label": "Warner Bros", "barcode": "", "staat_vinyl": "Very Good Plus (VG+)", "staat_hoes": "Very Good Plus (VG+)", "formaat": "LP", "genre": "Rock", "land": "UK", "opmerkingen": ""}, {"artiest": "The Alan Parsons Project", "titel": "Eve", "jaar": 1979, "label": "Arista", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Symfonic rock", "land": "UK", "opmerkingen": ""}, {"artiest": "Roy Orbison", "titel": "The very best of", "jaar": 1974, "label": "CBS", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Pop", "land": "US", "opmerkingen": ""}, {"artiest": "The Eagles", "titel": "The long run", "jaar": 1979, "label": "Asylum", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Rock", "land": "US", "opmerkingen": ""}, {"artiest": "Iron Maiden", "titel": "Live after death", "jaar": 1985, "label": "EMI", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Hardrock", "land": "UK", "opmerkingen": ""}, {"artiest": "The Moody blues", "titel": "Octave", "jaar": 1978, "label": "Decca", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Rock", "land": "UK", "opmerkingen": ""}, {"artiest": "Ian Dury and the blockheads", "titel": "Stiff little fingers", "jaar": 1978, "label": "Stiff records", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "New Wave", "land": "UK", "opmerkingen": ""}, {"artiest": "Bowwowwow", "titel": "See Jungle", "jaar": 1981, "label": "RCA", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "New Wave", "land": "UK", "opmerkingen": ""}, {"artiest": "Urban Heroes", "titel": "Who said", "jaar": 1980, "label": "Ariola", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "New Wave", "land": "NL", "opmerkingen": ""}, {"artiest": "Joh Lennon", "titel": "Shaved Fish", "jaar": 1975, "label": "Apple records", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Pop", "land": "UK", "opmerkingen": ""}, {"artiest": "Vandenberg", "titel": "Vandenberg", "jaar": 1982, "label": "Atco", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Hardrock", "land": "NL", "opmerkingen": ""}, {"artiest": "van Kooten en de Bie", "titel": "Hengstenbal", "jaar": 1977, "label": "Simpelpee", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Nederlandstalig", "land": "NL", "opmerkingen": ""}, {"artiest": "The Waterboys", "titel": "This is the sea", "jaar": 1985, "label": "Island", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Pop", "land": "UK", "opmerkingen": ""}, {"artiest": "Jim Croce", "titel": "Zijn grootste successen", "jaar": 1981, "label": "Roadrunner", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Pop", "land": "US", "opmerkingen": ""}, {"artiest": "Sade", "titel": "Diamond Life", "jaar": 1984, "label": "CBS", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Pop", "land": "UK", "opmerkingen": ""}, {"artiest": "van Kooten en de Bie", "titel": "Gouden doden", "jaar": 1981, "label": "Simpelpee", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "12\"", "genre": "Nederlandstalig", "land": "NL", "opmerkingen": ""}, {"artiest": "Al Stewart", "titel": "Year of the Cat", "jaar": 1977, "label": "RCA", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Pop", "land": "UK", "opmerkingen": ""}, {"artiest": "Gary Moore Phil Lynott", "titel": "Out in the Fields", "jaar": 1985, "label": "10 records", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "12\"", "genre": "Hardrock", "land": "UK", "opmerkingen": ""}, {"artiest": "Saga", "titel": "Images of Twilight", "jaar": 1979, "label": "Polydor stemra", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Hardrock", "land": "CAN", "opmerkingen": ""}, {"artiest": "The Eagles", "titel": "Hotel California", "jaar": 1976, "label": "Asylum", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Rock", "land": "US", "opmerkingen": ""}, {"artiest": "Van Halen", "titel": "Van Halen", "jaar": 1977, "label": "Warner Bros", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Hardrock", "land": "US", "opmerkingen": ""}, {"artiest": "Ennio Morricone", "titel": "Het gebeeurde in het westen", "jaar": 1983, "label": "RCA", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Film", "land": "IT", "opmerkingen": ""}, {"artiest": "Creedence clearwater Revival", "titel": "Creedence Gold", "jaar": null, "label": "Bellaphon", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Rock", "land": "US", "opmerkingen": ""}, {"artiest": "Madness", "titel": "Absolutely", "jaar": 1980, "label": "Stiff records", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "SKA", "land": "UK", "opmerkingen": ""}, {"artiest": "Bob Dylan", "titel": "Desire", "jaar": 1975, "label": "CBS", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Prog", "land": "US", "opmerkingen": ""}, {"artiest": "Van Halen", "titel": "Women and Children first", "jaar": 1980, "label": "Warner Bros", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Hardrock", "land": "US", "opmerkingen": ""}, {"artiest": "Robert Long", "titel": "Levenslang", "jaar": 1977, "label": "EMI", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Nederlandstalig", "land": "NL", "opmerkingen": ""}, {"artiest": "Men at Work", "titel": "Cargo", "jaar": 1982, "label": "CBS", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Pop", "land": "AUS", "opmerkingen": ""}, {"artiest": "Stars", "titel": "Hear'n AID", "jaar": 1985, "label": "A&M", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "12\"", "genre": "Hardrock", "land": "UK", "opmerkingen": ""}, {"artiest": "Cheap Trick", "titel": "Live at Budokan", "jaar": 1978, "label": "Epic", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Hardrock", "land": "AUS", "opmerkingen": ""}, {"artiest": "Ian Dury and the blockheads", "titel": "Laughter", "jaar": 1980, "label": "Stiff records", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "New Wave", "land": "UK", "opmerkingen": ""}, {"artiest": "Yazoo", "titel": "Don't Go", "jaar": 1982, "label": "Vogue", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "12\"", "genre": "New Wave", "land": "UK", "opmerkingen": ""}, {"artiest": "Yes", "titel": "Leave it", "jaar": 1983, "label": "Atlantic", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "12\"", "genre": "Rock", "land": "UK", "opmerkingen": ""}, {"artiest": "Mothe Bass", "titel": "Mother Bass", "jaar": 2018, "label": "Freya records", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Hardrock", "land": "UK", "opmerkingen": ""}, {"artiest": "JJ Cale", "titel": "The very best of", "jaar": 1988, "label": "Arcade", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Rock", "land": "US", "opmerkingen": ""}, {"artiest": "Het Goede Doel", "titel": "Tempo Doeloe", "jaar": 1983, "label": "CNR", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Nederlandstalig", "land": "NL", "opmerkingen": ""}, {"artiest": "Madness", "titel": "One Step beyond", "jaar": 1979, "label": "Stiff records", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "SKA", "land": "UK", "opmerkingen": ""}, {"artiest": "Simon and Garfunkel", "titel": "Greatest Hits", "jaar": 1972, "label": "CBS", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Poor", "formaat": "LP", "genre": "Pop", "land": "US", "opmerkingen": ""}, {"artiest": "Robert Long", "titel": "Dag kleine jongen", "jaar": 1983, "label": "Emi", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Nederlandstalig", "land": "NL", "opmerkingen": ""}, {"artiest": "Robert Long", "titel": "Achter de Horizon", "jaar": 1986, "label": "Emi", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Nederlandstalig", "land": "NL", "opmerkingen": ""}, {"artiest": "Easy Rider", "titel": "Born on the Road", "jaar": null, "label": "Europa", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Film", "land": "US", "opmerkingen": ""}, {"artiest": "van Kooten en de Bie", "titel": "Draaikonten", "jaar": null, "label": "Simpelpee", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Nederlandstalig", "land": "NL", "opmerkingen": ""}, {"artiest": "The Beatles", "titel": "Sergeant Peppers Lonely heartsclub Band", "jaar": 1969, "label": "Horzu / EMI", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Pop", "land": "UK", "opmerkingen": ""}, {"artiest": "Bram Tchaikovski", "titel": "Srah Smiles", "jaar": 1978, "label": "Criminal Records", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "12\"", "genre": "New Wave", "land": "UK", "opmerkingen": ""}, {"artiest": "Don McLean", "titel": "American Pie", "jaar": 1971, "label": "United Artist Records", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Pop", "land": "US", "opmerkingen": ""}, {"artiest": "Simon and Garfunkel", "titel": "Bridge over Troubled Water", "jaar": 1970, "label": "CBS", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Pop", "land": "US", "opmerkingen": ""}];
+<script>
+const STAAT_CFG = {
+  "Mint (M)":             {k:"#2ecc71",bg:"rgba(46,204,113,0.12)"},
+  "Near Mint (NM)":       {k:"#27ae60",bg:"rgba(39,174,96,0.12)"},
+  "Very Good Plus (VG+)": {k:"#3498db",bg:"rgba(52,152,219,0.12)"},
+  "Very Good (VG)":       {k:"#e67e22",bg:"rgba(230,126,34,0.12)"},
+  "Good Plus (G+)":       {k:"#e74c3c",bg:"rgba(231,76,60,0.12)"},
+  "Good (G)":             {k:"#c0392b",bg:"rgba(192,57,43,0.12)"},
+  "Fair (F)":             {k:"#922b21",bg:"rgba(146,43,33,0.12)"},
+  "Poor (P)":             {k:"#641e16",bg:"rgba(100,30,22,0.12)"},
+};
+function si(s){return STAAT_CFG[s]||{k:"#555",bg:"rgba(85,85,85,0.12)"};}
+
+const STORAGE_KEY = "platen_v4";
+const INIT = [{"artiest": "Supertramp", "titel": "Crime of the Century", "jaar": 1974, "label": "A&M / AMLH 63647", "barcode": "5060454940878", "staat_vinyl": "Very Good Plus (VG+)", "staat_hoes": "Very Good Plus (VG+)", "formaat": "LP", "genre": "Rock", "land": "NL", "opmerkingen": "NL pressing, vlooienmarkt", "afbeelding": "https://i.discogs.com/LvwkFd1dBJ1SgD-WsgYLKlJI6ZdgJSWRPhq_GnQdAyY/rs:fit/g:sm/q:90/h:600/w:590/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTMxNDA4/MzU4LTE3MjI4NzA0/NDQtMjM4Ny5qcGVn.jpeg"}, {"artiest": "Pink Floyd", "titel": "The Wall", "jaar": 1979, "label": "Harvest / SHDW 411", "barcode": "", "staat_vinyl": "Near Mint (NM)", "staat_hoes": "Very Good (VG)", "formaat": "2xLP", "genre": "Rock", "land": "UK", "opmerkingen": "Originele 1979 persing", "afbeelding": ""}, {"artiest": "Kate Bush", "titel": "The Kick Inside", "jaar": 1978, "label": "EMI / EMC 3223", "barcode": "", "staat_vinyl": "Very Good Plus (VG+)", "staat_hoes": "Very Good Plus (VG+)", "formaat": "LP", "genre": "Art Rock", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Marillion", "titel": "Fugazi", "jaar": 1984, "label": "EMI / EMC 3507", "barcode": "", "staat_vinyl": "Very Good Plus (VG+)", "staat_hoes": "Very Good (VG)", "formaat": "LP", "genre": "Prog Rock", "land": "UK", "opmerkingen": "Fish era", "afbeelding": ""}, {"artiest": "Supertramp", "titel": "Brother where you bound", "jaar": 1985, "label": "A&M / AMLH 63647", "barcode": "8283950141", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Rock", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Supertramp", "titel": "Breakfast in America", "jaar": 1979, "label": "A&M / AMLH 63647", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Rock", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Supertramp", "titel": "Famous last words", "jaar": 1982, "label": "a&M / AMLH 63732", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Rock", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Supertramp", "titel": "Paris", "jaar": 1980, "label": "A&M / AMLH 66702", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Rock", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "ELO", "titel": "Discovery", "jaar": 1979, "label": "Jet records", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Rock", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Deep purple", "titel": "24 Carat", "jaar": 1975, "label": "EMI / LC2546", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Hardrock", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Deep Purple", "titel": "In concert", "jaar": 1980, "label": "EMI", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Hardrock", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Robert Long", "titel": "Vroeger of later", "jaar": 1974, "label": "BOVEMA", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Nedderlandstalig", "land": "NL", "opmerkingen": "", "afbeelding": ""}, {"artiest": "AC/DC", "titel": "If you want blood", "jaar": 1978, "label": "Atlantic", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Hardrock", "land": "AUS", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Andreas Vollenweider", "titel": "Behind the gardens, behind the waal, under the tree", "jaar": 1981, "label": "CBS", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Instrumentaal", "land": "SUI", "opmerkingen": "", "afbeelding": ""}, {"artiest": "van Kooten en de Bie", "titel": "Op hun Pik getrapt", "jaar": 1980, "label": "STEMRA / SIMPELPEE", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Nederlandstalig", "land": "NL", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Iron Maiden", "titel": "Live in New York", "jaar": 2022, "label": "YELLOWIN RECORDS", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Hardrock", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Roger Waters", "titel": "The pros and cons of hitch hiking", "jaar": 1984, "label": "EMI", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Rock", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Fisher Z", "titel": "Word Salad", "jaar": 1979, "label": "EMI", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "SKA", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "The Alan Parsons Project", "titel": "Tales of mystery and Imagination by Edgar Allan Poe", "jaar": 1976, "label": "20th CENTURY RECORDS", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Symfonic rock", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Fisher Z", "titel": "Red skies over paradise", "jaar": 1981, "label": "Liberty records", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "SKA", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Marillion", "titel": "Grendel", "jaar": 1982, "label": "EMI", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "12\"", "genre": "Symfonic rock", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Marillion", "titel": "Script for a Jesters tear", "jaar": 1983, "label": "EMI", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Symfonic rock", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Marillion", "titel": "Fugazi", "jaar": 1984, "label": "EMI", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Symfonic rock", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Marillion", "titel": "Real to reel", "jaar": 1984, "label": "EMI", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Symfonic rock", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Marillion", "titel": "Kayleigh", "jaar": 1985, "label": "EMI", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "12\"", "genre": "Symfonic rock", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Marillion", "titel": "Lavender", "jaar": 1985, "label": "EMI", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "12\"", "genre": "Symfonic rock", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Iron Maiden", "titel": "The number of the beast", "jaar": 1982, "label": "EMI", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "12\"", "genre": "Hardrock", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Iron Maiden", "titel": "Senjutsu", "jaar": 2021, "label": "EMI", "barcode": "", "staat_vinyl": "Very Good Plus (VG+)", "staat_hoes": "Very Good Plus (VG+)", "formaat": "LP", "genre": "Hardrock", "land": "UK", "opmerkingen": "180 grams", "afbeelding": ""}, {"artiest": "Jeff Wayne", "titel": "War of the worlds", "jaar": 1978, "label": "CBS", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Symfonic rock", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "The Alan Parsons Project", "titel": "Ammonia Avenue", "jaar": 1984, "label": "Arista", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Symfonic rock", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "The Alan Parsons Project", "titel": "Eve", "jaar": 1979, "label": "Arista", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Symfonic rock", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "The Alan Parsons Project", "titel": "Pyramid", "jaar": 1978, "label": "Arista", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Symfonic rock", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "The Alan Parsons Project", "titel": "Eye in the sky", "jaar": 1982, "label": "Arista", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Symfonic rock", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "The Alan Parsons Project", "titel": "The turn of a friendly vard", "jaar": 1980, "label": "Arista", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Symfonic rock", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Pink Floyd", "titel": "Atom heart mother", "jaar": 2016, "label": "Pink Floyd records", "barcode": "", "staat_vinyl": "Very Good Plus (VG+)", "staat_hoes": "Very Good Plus (VG+)", "formaat": "LP", "genre": "Symfonic rock", "land": "UK", "opmerkingen": "180 grams", "afbeelding": ""}, {"artiest": "Pink Floyd", "titel": "Obscured by clouds", "jaar": 1972, "label": "EMI", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Symfonic rock", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Pink Floyd", "titel": "Ummagumma", "jaar": 1969, "label": "EMI", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Symfonic rock", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "The Police", "titel": "Synchronicity", "jaar": 1983, "label": "A&M", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "New Wave", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "The Police", "titel": "Outlandos d'amour", "jaar": 1978, "label": "A&M", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "New Wave", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "van Kooten en de Bie", "titel": "Willen niet dood", "jaar": 1985, "label": "STEMRA / SIMPELPEE", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Nederlandstalig", "land": "NL", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Jon and Vangelis", "titel": "Short stories", "jaar": 1979, "label": "Polydor stemra", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Symfonic rock", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "ELO", "titel": "Eldorado", "jaar": 1974, "label": "Jet records", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Symfonic rock", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Queen", "titel": "A day at the races", "jaar": 1976, "label": "Emi", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Rock", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Supertramp", "titel": "Even in the quietest moments", "jaar": 1977, "label": "A&M", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Rock", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Camel", "titel": "Nude", "jaar": 1981, "label": "Decca", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Symfonic rock", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "The Moody Blues", "titel": "This is the Moody Blues", "jaar": 1974, "label": "Stemra / Threshold", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Symfonic rock", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Queen", "titel": "News of the World", "jaar": 1977, "label": "EMI", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Rock", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Fleetwood Mac", "titel": "Rumours", "jaar": 1977, "label": "Warner Bros", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Rock", "land": "US", "opmerkingen": "", "afbeelding": ""}, {"artiest": "The Eagles", "titel": "Hotel California", "jaar": 1976, "label": "Asylum", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Rock", "land": "US", "opmerkingen": "", "afbeelding": ""}, {"artiest": "ELO", "titel": "Discovery", "jaar": 1979, "label": "Jet records", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Symfonic rock", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Status Quo", "titel": "Whatever you want", "jaar": 1979, "label": "Phonogram", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Hardrock", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Earth and Fire", "titel": "Reality fills Fantasy", "jaar": 1979, "label": "Vertigo", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Pop", "land": "NL", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Earth and Fire", "titel": "Greatest hits", "jaar": 1979, "label": "Phonogram", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Pop", "land": "NL", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Pink Floyd", "titel": "Animals", "jaar": 1977, "label": "EMI", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Symfonic rock", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Pink Floyd", "titel": "Dark side of the Moon", "jaar": 1973, "label": "EMI", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Symfonic rock", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Pink Floyd", "titel": "Wish you were Here", "jaar": 1975, "label": "EMI", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Symfonic rock", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Pink Floyd", "titel": "Medlle", "jaar": 1971, "label": "EMI", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Symfonic rock", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Pink Floyd", "titel": "The Wall", "jaar": 1979, "label": "EMI", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Symfonic rock", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Pink Floyd", "titel": "The Final Cut", "jaar": 1983, "label": "EMI", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Symfonic rock", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Queensryche", "titel": "The Warning", "jaar": 1984, "label": "EMI", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Hardrock", "land": "US", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Camel", "titel": "Moonmadness", "jaar": 1976, "label": "Passport Records", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Symfonic rock", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Camel", "titel": "The Single Factor", "jaar": 1982, "label": "Passport Records", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Symfonic rock", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Camel", "titel": "Pressure Points", "jaar": 1984, "label": "Polydor stemra", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Symfonic rock", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Marillion", "titel": "Clutching at Straws", "jaar": 1987, "label": "EMI", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Symfonic rock", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Simon and Garfunkel", "titel": "Live in Central Park", "jaar": 1981, "label": "Geffen Records", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Pop", "land": "US", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Laury Anderson", "titel": "Big Science", "jaar": 1982, "label": "Warner Bros", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Pop", "land": "US", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Magna Carta", "titel": "Lord of the Ages", "jaar": 1973, "label": "Vertigo", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Symfonic rock", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Ilse deLange", "titel": "Gravel & Dust", "jaar": 2019, "label": "Universal", "barcode": "", "staat_vinyl": "Very Good Plus (VG+)", "staat_hoes": "Very Good Plus (VG+)", "formaat": "LP", "genre": "Pop", "land": "NL", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Mike Oldfield", "titel": "Tubular Bells", "jaar": 1973, "label": "Virgin", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Symfonic rock", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Kiss", "titel": "Dynasty", "jaar": 1979, "label": "Casablanca", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Hardrock", "land": "US", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Joe Cocker", "titel": "Civilised man", "jaar": 1984, "label": "Capitol", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Pop", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Frankie Goes to Hollywood", "titel": "Two Tribes", "jaar": 1984, "label": "Ariola", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "12\"", "genre": "Pop", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Golden Earring", "titel": "Something heavy going down", "jaar": 1984, "label": "21 records", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Rock", "land": "NL", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Talk Talk", "titel": "It's my life", "jaar": 1984, "label": "EMI", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Pop", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "The Cure", "titel": "seventeen seconds", "jaar": 1980, "label": "Polydor stemra", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "New Wave", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Ilse deLange", "titel": "Ilse deLange", "jaar": 2018, "label": "Universal", "barcode": "", "staat_vinyl": "Very Good Plus (VG+)", "staat_hoes": "Very Good Plus (VG+)", "formaat": "LP", "genre": "Pop", "land": "NL", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Kiss", "titel": "Love Gun", "jaar": 1977, "label": "Casablanca", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Hardrock", "land": "US", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Fleetwood Mac", "titel": "Tusk", "jaar": 1979, "label": "Warner Bros", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Rock", "land": "US", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Fleetwood Mac", "titel": "Mirage", "jaar": 1982, "label": "Warner Bros", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Rock", "land": "US", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Jon and Vangelis", "titel": "The Friends of mr. Cairo", "jaar": 1981, "label": "Polydor stemra", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Symfonic rock", "land": "US", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Supertramp", "titel": "Famous last Words", "jaar": 1982, "label": "A&M", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Rock", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "ELO", "titel": "Out of the Blue", "jaar": 1977, "label": "Jet records", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Symfonic rock", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "ELO", "titel": "Xanadu", "jaar": 1980, "label": "Jet records", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Symfonic rock", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Fisher Z", "titel": "Going deaf for a living", "jaar": 1980, "label": "Universal", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "SKA", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Japan", "titel": "Nightporter", "jaar": 1982, "label": "Virgin", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "12\"", "genre": "Pop", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "The Animals", "titel": "House of the rising Sun", "jaar": null, "label": "EMI", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Poor", "formaat": "LP", "genre": "Rock", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Associates", "titel": "Those first Impressions", "jaar": 1984, "label": "Warner Bros", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "New Wave", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Dire Straits", "titel": "Communique", "jaar": 1979, "label": "Warner Bros", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Rock", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Dire Straits", "titel": "Dire Straits", "jaar": 1978, "label": "Vertigo", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Rock", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Nina Hagen Band", "titel": "Nina Hagen Band", "jaar": 1978, "label": "CBS", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Punk", "land": "D", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Kate Bush", "titel": "The Kick Inside", "jaar": 1978, "label": "Emi", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Pop", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Kate Bush", "titel": "Lionheart", "jaar": 1978, "label": "Emi", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Pop", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Kate Bush", "titel": "Never for Ever", "jaar": 1980, "label": "Emi", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Pop", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Kate Bush", "titel": "The Dreaming", "jaar": 1982, "label": "EMI", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Pop", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Bronski Beat", "titel": "Why", "jaar": 1984, "label": "London Records", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "12\"", "genre": "Pop", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Bronski Beat", "titel": "The age of Consent", "jaar": 1984, "label": "London Records", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Pop", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Bronski Beat", "titel": "Smalltown Boy", "jaar": 1984, "label": "London Records", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "12\"", "genre": "Pop", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Bots", "titel": "1975-1980", "jaar": 1980, "label": "Fontana", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Nederlandstalig", "land": "NL", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Foreigner", "titel": "Agent Provocateur", "jaar": 1984, "label": "Atlantic", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Rock", "land": "US", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Supertramp", "titel": "Live in Paris '79", "jaar": 2024, "label": "Universal", "barcode": "", "staat_vinyl": "Very Good Plus (VG+)", "staat_hoes": "Very Good Plus (VG+)", "formaat": "LP", "genre": "Rock", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Thomas Dolby", "titel": "The Flat earth", "jaar": 1984, "label": "EMI", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "New Wave", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Supertramp", "titel": "Crisis? What crisis", "jaar": 1975, "label": "A&M", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Rock", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Muse", "titel": "Will of the People", "jaar": 2022, "label": "Warner Bros", "barcode": "", "staat_vinyl": "Very Good Plus (VG+)", "staat_hoes": "Very Good Plus (VG+)", "formaat": "LP", "genre": "Rock", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "The Alan Parsons Project", "titel": "Eve", "jaar": 1979, "label": "Arista", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Symfonic rock", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Roy Orbison", "titel": "The very best of", "jaar": 1974, "label": "CBS", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Pop", "land": "US", "opmerkingen": "", "afbeelding": ""}, {"artiest": "The Eagles", "titel": "The long run", "jaar": 1979, "label": "Asylum", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Rock", "land": "US", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Iron Maiden", "titel": "Live after death", "jaar": 1985, "label": "EMI", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Hardrock", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "The Moody blues", "titel": "Octave", "jaar": 1978, "label": "Decca", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Rock", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Ian Dury and the blockheads", "titel": "Stiff little fingers", "jaar": 1978, "label": "Stiff records", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "New Wave", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Bowwowwow", "titel": "See Jungle", "jaar": 1981, "label": "RCA", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "New Wave", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Urban Heroes", "titel": "Who said", "jaar": 1980, "label": "Ariola", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "New Wave", "land": "NL", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Joh Lennon", "titel": "Shaved Fish", "jaar": 1975, "label": "Apple records", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Pop", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Vandenberg", "titel": "Vandenberg", "jaar": 1982, "label": "Atco", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Hardrock", "land": "NL", "opmerkingen": "", "afbeelding": ""}, {"artiest": "van Kooten en de Bie", "titel": "Hengstenbal", "jaar": 1977, "label": "Simpelpee", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Nederlandstalig", "land": "NL", "opmerkingen": "", "afbeelding": ""}, {"artiest": "The Waterboys", "titel": "This is the sea", "jaar": 1985, "label": "Island", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Pop", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Jim Croce", "titel": "Zijn grootste successen", "jaar": 1981, "label": "Roadrunner", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Pop", "land": "US", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Sade", "titel": "Diamond Life", "jaar": 1984, "label": "CBS", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Pop", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "van Kooten en de Bie", "titel": "Gouden doden", "jaar": 1981, "label": "Simpelpee", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "12\"", "genre": "Nederlandstalig", "land": "NL", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Al Stewart", "titel": "Year of the Cat", "jaar": 1977, "label": "RCA", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Pop", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Gary Moore Phil Lynott", "titel": "Out in the Fields", "jaar": 1985, "label": "10 records", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "12\"", "genre": "Hardrock", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Saga", "titel": "Images of Twilight", "jaar": 1979, "label": "Polydor stemra", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Hardrock", "land": "CAN", "opmerkingen": "", "afbeelding": ""}, {"artiest": "The Eagles", "titel": "Hotel California", "jaar": 1976, "label": "Asylum", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Rock", "land": "US", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Van Halen", "titel": "Van Halen", "jaar": 1977, "label": "Warner Bros", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Hardrock", "land": "US", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Ennio Morricone", "titel": "Het gebeeurde in het westen", "jaar": 1983, "label": "RCA", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Film", "land": "IT", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Creedence clearwater Revival", "titel": "Creedence Gold", "jaar": null, "label": "Bellaphon", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Rock", "land": "US", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Madness", "titel": "Absolutely", "jaar": 1980, "label": "Stiff records", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "SKA", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Bob Dylan", "titel": "Desire", "jaar": 1975, "label": "CBS", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Prog", "land": "US", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Van Halen", "titel": "Women and Children first", "jaar": 1980, "label": "Warner Bros", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Hardrock", "land": "US", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Robert Long", "titel": "Levenslang", "jaar": 1977, "label": "EMI", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Nederlandstalig", "land": "NL", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Men at Work", "titel": "Cargo", "jaar": 1982, "label": "CBS", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Pop", "land": "AUS", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Stars", "titel": "Hear'n AID", "jaar": 1985, "label": "A&M", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "12\"", "genre": "Hardrock", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Cheap Trick", "titel": "Live at Budokan", "jaar": 1978, "label": "Epic", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Hardrock", "land": "AUS", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Ian Dury and the blockheads", "titel": "Laughter", "jaar": 1980, "label": "Stiff records", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "New Wave", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Yazoo", "titel": "Don't Go", "jaar": 1982, "label": "Vogue", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "12\"", "genre": "New Wave", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Yes", "titel": "Leave it", "jaar": 1983, "label": "Atlantic", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "12\"", "genre": "Rock", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Mothe Bass", "titel": "Mother Bass", "jaar": 2018, "label": "Freya records", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Hardrock", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "JJ Cale", "titel": "The very best of", "jaar": 1988, "label": "Arcade", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Rock", "land": "US", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Het Goede Doel", "titel": "Tempo Doeloe", "jaar": 1983, "label": "CNR", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Nederlandstalig", "land": "NL", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Madness", "titel": "One Step beyond", "jaar": 1979, "label": "Stiff records", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "SKA", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Simon and Garfunkel", "titel": "Greatest Hits", "jaar": 1972, "label": "CBS", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Poor", "formaat": "LP", "genre": "Pop", "land": "US", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Robert Long", "titel": "Dag kleine jongen", "jaar": 1983, "label": "Emi", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Nederlandstalig", "land": "NL", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Robert Long", "titel": "Achter de Horizon", "jaar": 1986, "label": "Emi", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Nederlandstalig", "land": "NL", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Easy Rider", "titel": "Born on the Road", "jaar": null, "label": "Europa", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Film", "land": "US", "opmerkingen": "", "afbeelding": ""}, {"artiest": "van Kooten en de Bie", "titel": "Draaikonten", "jaar": null, "label": "Simpelpee", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Nederlandstalig", "land": "NL", "opmerkingen": "", "afbeelding": ""}, {"artiest": "The Beatles", "titel": "Sergeant Peppers Lonely heartsclub Band", "jaar": 1969, "label": "Horzu / EMI", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Pop", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Bram Tchaikovski", "titel": "Srah Smiles", "jaar": 1978, "label": "Criminal Records", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "12\"", "genre": "New Wave", "land": "UK", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Don McLean", "titel": "American Pie", "jaar": 1971, "label": "United Artist Records", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Pop", "land": "US", "opmerkingen": "", "afbeelding": ""}, {"artiest": "Simon and Garfunkel", "titel": "Bridge over Troubled Water", "jaar": 1970, "label": "CBS", "barcode": "", "staat_vinyl": "Good", "staat_hoes": "Good", "formaat": "LP", "genre": "Pop", "land": "US", "opmerkingen": "", "afbeelding": ""}];
 
 let col = [];
-let zoek = "", filter = "", openId = null;
+let zoek = "", filter = "", openId = null, huidigTab = "collectie";
 
 function laad(){
-  try{const d=localStorage.getItem("platen_v3");col=d?JSON.parse(d):[...INIT];}
+  try{const d=localStorage.getItem(STORAGE_KEY);col=d?JSON.parse(d):[...INIT];}
   catch(e){col=[...INIT];}
 }
-function sla(){try{localStorage.setItem("platen_v3",JSON.stringify(col));}catch(e){}}
+function sla(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(col));}catch(e){}}
+
+function renderStats(){
+  const nm = col.filter(p=>p.staat_vinyl==="Near Mint (NM)"||p.staat_vinyl==="Mint (M)").length;
+  const vgp = col.filter(p=>p.staat_vinyl==="Very Good Plus (VG+)").length;
+  document.getElementById("statsBar").innerHTML = `
+    <div class="stat-card"><div class="stat-num">${col.length}</div><div class="stat-lbl">Platen</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:#27ae60">${nm}</div><div class="stat-lbl">NM of beter</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:#3498db">${vgp}</div><div class="stat-lbl">VG+</div></div>`;
+}
 
 function render(){
+  renderStats();
   const q=zoek.toLowerCase();
   const gef=col.filter(p=>{
     const mz=!q||p.artiest.toLowerCase().includes(q)||p.titel.toLowerCase().includes(q)||(p.genre||"").toLowerCase().includes(q);
     const mf=!filter||p.artiest===filter;
     return mz&&mf;
   });
-  document.getElementById("teller").textContent=(zoek||filter)?`${gef.length} / ${col.length} platen`:`${col.length} platen`;
 
-  // Chips
+  document.getElementById("teller").textContent=(zoek||filter)?`${gef.length} / ${col.length}`:`${col.length} platen`;
+
+  // Chips — top artiesten
   const tels={};col.forEach(p=>{tels[p.artiest]=(tels[p.artiest]||0)+1;});
   const tops=Object.entries(tels).filter(([,n])=>n>1).sort(([a],[b])=>a.localeCompare(b));
-  const chipsEl = document.getElementById("chips");
-  chipsEl.innerHTML =
+  document.getElementById("chips").innerHTML=
     `<button class="chip${!filter?" actief":""}" onclick="setFilter('')">Alle</button>`+
-    tops.map(([a,n],i)=>`<button class="chip${filter===a?" actief":""}" data-artiest="${i}" onclick="setFilterIdx(this)">${a.split(" ")[0]} (${n})</button>`).join("");
-  // sla artiestnamen op in dataset
-  chipsEl.querySelectorAll("[data-artiest]").forEach((btn,i)=>{btn._artiest=tops[i][0];});
+    tops.map(([a,n],i)=>`<button class="chip${filter===a?" actief":""}" data-idx="${i}" onclick="setFilterBtn(this)">${a.split(" ")[0]} <span style="opacity:.6">${n}</span></button>`).join("");
+  document.querySelectorAll("[data-idx]").forEach((btn,i)=>{btn._artiest=tops[i][0];});
 
-  // Lijst
   if(!gef.length){
-    document.getElementById("lijst").innerHTML=`<div class="leeg"><div style="font-size:48px;margin-bottom:12px">🎵</div><p>Geen platen gevonden</p></div>`;
+    document.getElementById("lijst").innerHTML=`<div class="leeg"><div class="leeg-icon">🎵</div><p style="font-size:15px">Geen platen gevonden</p></div>`;
     return;
   }
+
   const groepen={};
   gef.forEach(p=>{if(!groepen[p.artiest])groepen[p.artiest]=[];groepen[p.artiest].push(p);});
   const arr=Object.entries(groepen).sort(([a],[b])=>a.localeCompare(b));
 
   document.getElementById("lijst").innerHTML=arr.map(([art,platen])=>`
-    <div class="sectie-hdr">${art} <span style="color:#333">(${platen.length})</span></div>
+    <div class="sectie-hdr">${art} <span style="color:#333">${platen.length}</span></div>
     ${platen.map(p=>{
       const idx=col.indexOf(p);
-      const id=`k${idx}`;
+      const id="k"+idx;
       const isOpen=openId===id;
       const info=si(p.staat_vinyl);
-      const details=[
-        ["Staat vinyl",p.staat_vinyl,true],
-        ["Staat hoes",p.staat_hoes,true],
-        ["Label / Nr.",p.label,false],
-        ["Barcode",p.barcode,false],
-        ["Genre",p.genre,false],
-        ["Opmerkingen",p.opmerkingen,false],
-      ].filter(([,v])=>v).map(([lbl,val,isSt])=>isSt
-        ?`<div class="detail-rij"><span class="detail-label">${lbl}</span><span class="staat-pill" style="color:${si(val).k};background:${si(val).bg}">${val}</span></div>`
-        :`<div class="detail-rij"><span class="detail-label">${lbl}</span><span class="detail-waarde">${val}</span></div>`
-      ).join("");
       return `<div class="kaart${isOpen?" open":""}" id="${id}" onclick="toggle('${id}')">
         <div class="kaart-hoofd">
-          <svg width="42" height="42" viewBox="0 0 44 44" style="flex-shrink:0">
-            <circle cx="22" cy="22" r="21" fill="#111" stroke="#333" stroke-width="1.5"/>
-            <circle cx="22" cy="22" r="15" fill="#1a1a1a"/>
-            <circle cx="22" cy="22" r="9" fill="#111"/>
-            <circle cx="22" cy="22" r="4" fill="${info.k}"/>
-            <circle cx="22" cy="22" r="1.5" fill="#111"/>
-          </svg>
+          <div class="vinyl" style="border-radius:${p.afbeelding?'8px':'50%'};overflow:hidden;background:#0d0d0d">
+            ${p.afbeelding
+              ? `<img src="${p.afbeelding}" style="width:52px;height:52px;object-fit:cover;border-radius:8px" onerror="this.style.display='none'">`
+              : `<svg viewBox="0 0 52 52" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="26" cy="26" r="25" fill="#0d0d0d" stroke="#2a2a2a" stroke-width="1"/>
+              <circle cx="26" cy="26" r="19" fill="#141414"/>
+              <circle cx="26" cy="26" r="13" fill="#0d0d0d"/>
+              <circle cx="26" cy="26" r="7" fill="#161616"/>
+              <circle cx="26" cy="26" r="4" fill="${info.k}" opacity="0.9"/>
+              <circle cx="26" cy="26" r="1.8" fill="#0d0d0d"/>
+            </svg>`}
+          </div>
           <div class="plaat-info">
             <div class="plaat-titel">${p.titel}</div>
             <div class="plaat-artiest">${p.artiest}</div>
-            <div class="plaat-meta">
-              ${p.jaar?`<span class="badge badge-jaar">${p.jaar}</span>`:""}
-              <span class="badge badge-formaat">${p.formaat||"LP"}</span>
-              ${p.land?`<span class="badge badge-land">${p.land}</span>`:""}
+            <div class="plaat-badges">
+              ${p.jaar?`<span class="badge b-jaar">${p.jaar}</span>`:""}
+              <span class="badge b-formaat">${p.formaat||"LP"}</span>
+              ${p.land?`<span class="badge b-land">${p.land}</span>`:""}
             </div>
           </div>
-          <div class="staat-dot" style="background:${info.k}"></div>
+          <div class="staat-dot" style="background:${info.k};color:${info.k}"></div>
         </div>
-        <div class="detail">
-          ${details}
-          <button class="verwijder-btn" onclick="event.stopPropagation();verwijder(${idx})">🗑 Verwijderen</button>
-        </div>
+        ${isOpen?`<div class="detail">
+          ${p.afbeelding?`<div style="margin-bottom:10px;border-radius:12px;overflow:hidden;max-height:200px;text-align:center;background:#0d0d0d">
+            <img src="${p.afbeelding}" style="max-width:100%;max-height:200px;object-fit:contain" onerror="this.parentElement.style.display='none'">
+          </div>`:""}
+          <div class="detail-grid">
+            ${p.staat_vinyl?`<div class="detail-blok"><div class="detail-lbl">Staat Vinyl</div><span class="staat-pill" style="color:${si(p.staat_vinyl).k};background:${si(p.staat_vinyl).bg}">${p.staat_vinyl}</span></div>`:""}
+            ${p.staat_hoes?`<div class="detail-blok"><div class="detail-lbl">Staat Hoes</div><span class="staat-pill" style="color:${si(p.staat_hoes).k};background:${si(p.staat_hoes).bg}">${p.staat_hoes}</span></div>`:""}
+            ${p.label?`<div class="detail-blok"><div class="detail-lbl">Label / Nr.</div><div class="detail-val" style="font-size:12px">${p.label}</div></div>`:""}
+            ${p.genre?`<div class="detail-blok"><div class="detail-lbl">Genre</div><div class="detail-val">${p.genre}</div></div>`:""}
+            ${p.barcode?`<div class="detail-blok"><div class="detail-lbl">Barcode</div><div class="detail-val" style="font-size:11px;font-family:monospace">${p.barcode}</div></div>`:""}
+            ${p.land?`<div class="detail-blok"><div class="detail-lbl">Land</div><div class="detail-val">${p.land}</div></div>`:""}
+          </div>
+          ${p.opmerkingen?`<div class="detail-opmerking">💬 ${p.opmerkingen}</div>`:""}
+          <button class="verwijder-btn" onclick="event.stopPropagation();verwijder(${idx})">🗑 Verwijderen uit collectie</button>
+        </div>`:""}
       </div>`;
     }).join("")}
   `).join("");
@@ -227,10 +357,12 @@ function toggle(id){
   if(openId&&openId!==id){const prev=document.getElementById(openId);if(prev)prev.classList.remove("open");}
   el.classList.toggle("open");
   openId=el.classList.contains("open")?id:null;
-  if(openId)setTimeout(()=>el.scrollIntoView({behavior:"smooth",block:"nearest"}),50);
+  render();
+  if(openId)setTimeout(()=>el.scrollIntoView({behavior:"smooth",block:"nearest"}),100);
 }
+
 function setFilter(a){filter=a;render();}
-function setFilterIdx(btn){filter=btn._artiest||"";render();}
+function setFilterBtn(btn){filter=btn._artiest||"";render();}
 function zoekWissen(){document.getElementById("zoekInput").value="";zoek="";document.getElementById("zoekClear").style.display="none";render();}
 document.getElementById("zoekInput").addEventListener("input",function(){
   zoek=this.value;filter="";
@@ -243,6 +375,7 @@ function toonTab(id,btn){
   document.getElementById(id).style.display="block";
   document.querySelectorAll(".tab").forEach(t=>t.classList.remove("actief"));
   btn.classList.add("actief");
+  huidigTab=id;
   if(id==="collectie")render();
 }
 
@@ -254,7 +387,7 @@ function plaatOpslaan(){
     artiest:a,titel:t,
     jaar:parseInt(document.getElementById("f_jaar").value)||null,
     label:document.getElementById("f_label").value.trim(),
-    barcode:"",
+    barcode:document.getElementById("f_barcode").value.trim(),
     staat_vinyl:document.getElementById("f_staat_vinyl").value,
     staat_hoes:document.getElementById("f_staat_hoes").value,
     formaat:document.getElementById("f_formaat").value,
@@ -263,10 +396,8 @@ function plaatOpslaan(){
     opmerkingen:document.getElementById("f_opmerkingen").value.trim(),
   });
   sla();
-  toonToast(`✅ ${a} — ${t} toegevoegd`);
-  ["f_artiest","f_titel","f_jaar","f_label","f_genre","f_land","f_opmerkingen"].forEach(id=>document.getElementById(id).value="");
-  document.getElementById("f_staat_vinyl").selectedIndex=2;
-  document.getElementById("f_staat_hoes").selectedIndex=2;
+  toonToast("✅ "+a+" — "+t+" toegevoegd!");
+  ["f_artiest","f_titel","f_jaar","f_label","f_barcode","f_genre","f_land","f_opmerkingen","f_afbeelding"].forEach(id=>document.getElementById(id).value="");
   document.querySelector('.tab[onclick*="collectie"]').click();
 }
 
@@ -276,12 +407,143 @@ function verwijder(idx){
   toonToast("🗑 Plaat verwijderd");render();
 }
 
+// ── BARCODE SCANNER ──────────────────────────────────────────────────────────
+let codeReader = null;
+let scannerStream = null;
+
+async function openScanner(){
+  document.getElementById("scannerModal").classList.add("open");
+  document.getElementById("scannerStatus").textContent = "Camera starten…";
+  try {
+    if(typeof ZXing === "undefined"){
+      document.getElementById("scannerStatus").textContent = "⚠️ Scanner kon niet laden. Vul barcode handmatig in.";
+      return;
+    }
+    codeReader = new ZXing.BrowserBarcodeReader();
+    const videoEl = document.getElementById("scannerVideo");
+    const stream = await navigator.mediaDevices.getUserMedia({video:{facingMode:"environment"}});
+    scannerStream = stream;
+    videoEl.srcObject = stream;
+    document.getElementById("scannerStatus").textContent = "Richt op de barcode…";
+    codeReader.decodeFromVideoElement(videoEl, (result, err) => {
+      if(result){
+        const barcode = result.getText();
+        sluitScanner();
+        zoekDiscogs(barcode);
+      }
+    });
+  } catch(e){
+    document.getElementById("scannerStatus").textContent = "⚠️ Geen cameratoegang. Geef toestemming in Safari-instellingen.";
+  }
+}
+
+function sluitScanner(){
+  document.getElementById("scannerModal").classList.remove("open");
+  if(codeReader){try{codeReader.reset();}catch(e){}}
+  if(scannerStream){scannerStream.getTracks().forEach(t=>t.stop());}
+  codeReader=null;scannerStream=null;
+}
+
+async function zoekDiscogs(barcode){
+  toonToast("🔍 Barcode gevonden: "+barcode+"…");
+  document.getElementById("f_barcode").value = barcode;
+  document.querySelector('.tab[onclick*="toevoegen"]').click();
+  try{
+    const url = `https://api.discogs.com/database/search?barcode=${barcode}&token=undefined`;
+    const resp = await fetch(`https://corsproxy.io/?${encodeURIComponent(`https://api.discogs.com/database/search?barcode=${barcode}`)}`);
+    if(!resp.ok) throw new Error();
+    const data = await resp.json();
+    if(data.results && data.results.length > 0){
+      const r = data.results[0];
+      const artiest = r.title ? r.title.split(" - ")[0] : "";
+      const titel = r.title ? r.title.split(" - ").slice(1).join(" - ") : "";
+      const jaar = r.year || "";
+      const genre = r.genre ? r.genre[0] : "";
+      const formaat = r.format ? r.format[0] : "LP";
+      const land = r.country || "";
+      if(artiest) document.getElementById("f_artiest").value = artiest;
+      if(titel) document.getElementById("f_titel").value = titel;
+      if(jaar) document.getElementById("f_jaar").value = jaar;
+      if(genre) document.getElementById("f_genre").value = genre;
+      if(land) document.getElementById("f_land").value = land;
+      toonToast("✅ Gegevens gevonden via Discogs!");
+    } else {
+      toonToast("Barcode "+barcode+" — vul gegevens aan");
+    }
+  } catch(e){
+    toonToast("Barcode "+barcode+" ingevuld — vul gegevens aan");
+  }
+}
+
 let toastTimer;
 function toonToast(t){
   const el=document.getElementById("toast");
   el.textContent=t;el.classList.add("toon");
   clearTimeout(toastTimer);
-  toastTimer=setTimeout(()=>el.classList.remove("toon"),2500);
+  toastTimer=setTimeout(()=>el.classList.remove("toon"),2800);
+}
+
+
+async function zoekOpCatno(){
+  const catno = document.getElementById("f_catno").value.trim();
+  if(!catno){toonToast("⚠️ Vul een catalogusnummer in");return;}
+  const el = document.getElementById("catnoResultaten");
+  el.innerHTML = '<div style="color:#888;font-size:13px;padding:8px 0">🔍 Zoeken…</div>';
+  try {
+    const resp = await fetch(`https://corsproxy.io/?${encodeURIComponent("https://api.discogs.com/database/search?catno="+encodeURIComponent(catno)+"&type=release")}`);
+    if(!resp.ok) throw new Error();
+    const data = await resp.json();
+    if(!data.results || data.results.length === 0){
+      el.innerHTML = '<div style="color:#e74c3c;font-size:13px;padding:8px 0">Geen resultaten gevonden voor "'+catno+'"</div>';
+      return;
+    }
+    const items = data.results.slice(0,5);
+    el.innerHTML = '<div style="font-size:11px;color:#666;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Kies een resultaat:</div>' +
+      items.map((r,i) => {
+        const artiest = r.title ? r.title.split(" - ")[0] : "";
+        const titel = r.title ? r.title.split(" - ").slice(1).join(" - ") : r.title || "";
+        const jaar = r.year || "";
+        const land = r.country || "";
+        const formaat = r.format ? r.format[0] : "LP";
+        return `<div onclick="vulIn(${i})" data-res='${JSON.stringify({artiest,titel,jaar,land,formaat,genre:r.genre?r.genre[0]:"",label:catno}).replace(/'/g,"&#39;")}' 
+          style="background:#1a1a1f;border:1px solid #2a2a2a;border-radius:10px;padding:10px 12px;margin-bottom:6px;cursor:pointer;transition:border-color .15s"
+          onmouseover="this.style.borderColor='#c0392b'" onmouseout="this.style.borderColor='#2a2a2a'">
+          <div style="font-size:13px;font-weight:700;color:#fff">${artiest} — ${titel}</div>
+          <div style="font-size:11px;color:#888;margin-top:2px">${[jaar,land,formaat].filter(Boolean).join(" · ")}</div>
+        </div>`;
+      }).join("");
+    // Sla resultaten op voor vulIn()
+    window._catnoResultaten = items.map(r => ({
+      artiest: r.title ? r.title.split(" - ")[0] : "",
+      afbeelding: r.cover_image || r.thumb || "",
+      titel: r.title ? r.title.split(" - ").slice(1).join(" - ") : "",
+      jaar: r.year || "",
+      land: r.country || "",
+      formaat: r.format ? r.format[0] : "LP",
+      genre: r.genre ? r.genre[0] : "",
+      label: catno,
+    }));
+  } catch(e){
+    el.innerHTML = '<div style="color:#e74c3c;font-size:13px;padding:8px 0">⚠️ Kon Discogs niet bereiken. Probeer opnieuw.</div>';
+  }
+}
+
+function vulIn(idx){
+  const r = window._catnoResultaten[idx];
+  if(!r) return;
+  if(r.artiest) document.getElementById("f_artiest").value = r.artiest;
+  if(r.titel)   document.getElementById("f_titel").value   = r.titel;
+  if(r.jaar)    document.getElementById("f_jaar").value    = r.jaar;
+  if(r.genre)   document.getElementById("f_genre").value   = r.genre;
+  if(r.land)    document.getElementById("f_land").value    = r.land;
+  if(r.label)   document.getElementById("f_label").value   = r.label;
+  // Formaat mappen
+  const fmt = r.formaat || "LP";
+  const fmtOpts = ["LP","2xLP","EP","Single (7\")", "12\" Single","Maxi-Single","Box Set","Overig"];
+  const match = fmtOpts.find(f => fmt.toLowerCase().includes(f.toLowerCase().replace(/"/g,"")));
+  if(match) document.getElementById("f_formaat").value = match;
+  document.getElementById("catnoResultaten").innerHTML = '<div style="color:#27ae60;font-size:13px;padding:6px 0">✅ Gegevens ingevuld — controleer en pas aan!</div>';
+  toonToast("✅ Gegevens ingevuld vanuit Discogs");
 }
 
 laad();render();
