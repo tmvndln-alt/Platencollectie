@@ -135,6 +135,7 @@ main { padding: 8px 12px 90px; }
 /* TOAST */
 .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px); background: #1e1e1e; color: #fff; padding: 11px 22px; border-radius: 24px; font-size: 13px; font-weight: 700; opacity: 0; transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1); z-index: 999; white-space: nowrap; border: 1px solid #333; box-shadow: 0 8px 32px rgba(0,0,0,0.5); }
 .toast.toon { opacity: 1; transform: translateX(-50%) translateY(0); }
+@keyframes spin{to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
@@ -199,7 +200,7 @@ main { padding: 8px 12px 90px; }
       <div id="catnoResultaten" style="margin-top:8px"></div>
     </div>
     <div style="border-top:1px solid #222;margin:4px 0 16px;"></div>    <div class="form-rij">
-      <div class="form-veld"><label class="form-lbl">Artiest *</label><input class="form-inp" id="f_artiest" placeholder="bijv. Pink Floyd"></div>
+      <div class="form-veld"><label class="form-lbl">Artiest *</label><div style="display:flex;gap:8px"><input class="form-inp" id="f_artiest" placeholder="bijv. Pink Floyd" style="flex:1"><button onclick="zoekOpTitel()" style="padding:0 12px;background:#1a1a1f;border:1.5px solid #333;border-radius:12px;color:#aaa;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0">🔎 Zoek</button></div></div>
       <div class="form-veld"><label class="form-lbl">Jaar</label><input class="form-inp" id="f_jaar" type="number" placeholder="1979"></div>
     </div>
     <div class="form-veld"><label class="form-lbl">Titel *</label><input class="form-inp" id="f_titel" placeholder="bijv. The Wall"></div>
@@ -344,6 +345,10 @@ function render(){
             ${p.land?`<div class="detail-blok"><div class="detail-lbl">Land</div><div class="detail-val">${p.land}</div></div>`:""}
           </div>
           ${p.opmerkingen?`<div class="detail-opmerking">💬 ${p.opmerkingen}</div>`:""}
+          <div style="display:flex;gap:8px;margin-bottom:8px">
+            <button onclick="event.stopPropagation();zoekWaarde(${idx})" style="flex:1;padding:9px;background:#0d1f2b;border:1px solid #2980b9;border-radius:10px;color:#3498db;font-size:12px;font-weight:700;cursor:pointer">💰 Zoek marktwaarde</button>
+          </div>
+          <div id="waarde_${idx}" style="display:none;margin-bottom:8px"></div>
           <button class="verwijder-btn" onclick="event.stopPropagation();verwijder(${idx})">🗑 Verwijderen uit collectie</button>
         </div>`:""}
       </div>`;
@@ -487,63 +492,202 @@ function toonToast(t){
 async function zoekOpCatno(){
   const catno = document.getElementById("f_catno").value.trim();
   if(!catno){toonToast("⚠️ Vul een catalogusnummer in");return;}
+  await zoekDiscogsTerm(catno, "catno");
+}
+
+async function zoekOpTitel(){
+  const artiest = document.getElementById("f_artiest").value.trim();
+  const titel   = document.getElementById("f_titel").value.trim();
+  if(!artiest && !titel){toonToast("⚠️ Vul artiest of titel in");return;}
+  const term = [artiest, titel].filter(Boolean).join(" ");
+  await zoekDiscogsTerm(term, "release");
+}
+
+async function zoekDiscogsTerm(term, type){
   const el = document.getElementById("catnoResultaten");
-  el.innerHTML = '<div style="color:#888;font-size:13px;padding:8px 0">🔍 Zoeken…</div>';
+  el.innerHTML = '<div style="color:#888;font-size:13px;padding:8px 0;display:flex;align-items:center;gap:8px"><span style="display:inline-block;width:14px;height:14px;border:2px solid #555;border-top-color:#c0392b;border-radius:50%;animation:spin 0.8s linear infinite"></span> Zoeken via Discogs…</div>';
+
+  const param = type === "catno" ? `catno=${encodeURIComponent(term)}` : `q=${encodeURIComponent(term)}&type=release`;
+  const discogsUrl = `https://api.discogs.com/database/search?${param}&per_page=8`;
+
   try {
-    const resp = await fetch(`https://corsproxy.io/?${encodeURIComponent("https://api.discogs.com/database/search?catno="+encodeURIComponent(catno)+"&type=release")}`);
-    if(!resp.ok) throw new Error();
-    const data = await resp.json();
+    // Probeer eerst direct, dan via proxy
+    let data;
+    try {
+      const r = await fetch(discogsUrl, {headers:{"User-Agent":"PlatencollectieApp/1.0"}});
+      data = await r.json();
+    } catch(e) {
+      const r = await fetch(`https://corsproxy.io/?${encodeURIComponent(discogsUrl)}`);
+      data = await r.json();
+    }
+
     if(!data.results || data.results.length === 0){
-      el.innerHTML = '<div style="color:#e74c3c;font-size:13px;padding:8px 0">Geen resultaten gevonden voor "'+catno+'"</div>';
+      el.innerHTML = `<div style="color:#e74c3c;font-size:13px;padding:8px 0">Geen resultaten voor "<b>${term}</b>"</div>`;
       return;
     }
-    const items = data.results.slice(0,5);
-    el.innerHTML = '<div style="font-size:11px;color:#666;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Kies een resultaat:</div>' +
-      items.map((r,i) => {
-        const artiest = r.title ? r.title.split(" - ")[0] : "";
-        const titel = r.title ? r.title.split(" - ").slice(1).join(" - ") : r.title || "";
-        const jaar = r.year || "";
-        const land = r.country || "";
-        const formaat = r.format ? r.format[0] : "LP";
-        return `<div onclick="vulIn(${i})" data-res='${JSON.stringify({artiest,titel,jaar,land,formaat,genre:r.genre?r.genre[0]:"",label:catno}).replace(/'/g,"&#39;")}' 
-          style="background:#1a1a1f;border:1px solid #2a2a2a;border-radius:10px;padding:10px 12px;margin-bottom:6px;cursor:pointer;transition:border-color .15s"
-          onmouseover="this.style.borderColor='#c0392b'" onmouseout="this.style.borderColor='#2a2a2a'">
-          <div style="font-size:13px;font-weight:700;color:#fff">${artiest} — ${titel}</div>
-          <div style="font-size:11px;color:#888;margin-top:2px">${[jaar,land,formaat].filter(Boolean).join(" · ")}</div>
-        </div>`;
-      }).join("");
-    // Sla resultaten op voor vulIn()
-    window._catnoResultaten = items.map(r => ({
-      artiest: r.title ? r.title.split(" - ")[0] : "",
-      afbeelding: r.cover_image || r.thumb || "",
-      titel: r.title ? r.title.split(" - ").slice(1).join(" - ") : "",
-      jaar: r.year || "",
-      land: r.country || "",
-      formaat: r.format ? r.format[0] : "LP",
-      genre: r.genre ? r.genre[0] : "",
-      label: catno,
+
+    window._catnoResultaten = data.results.slice(0,8).map(r => ({
+      artiest:    r.title ? r.title.split(" - ")[0].trim() : "",
+      titel:      r.title ? r.title.split(" - ").slice(1).join(" - ").trim() : "",
+      jaar:       r.year || "",
+      land:       r.country || "",
+      formaat:    r.format ? r.format[0] : "LP",
+      genre:      r.genre ? r.genre[0] : "",
+      label:      r.label ? r.label[0] : (type==="catno"?term:""),
+      catno:      r.catno || "",
+      afbeelding: r.cover_image && !r.cover_image.includes("spacer") ? r.cover_image : (r.thumb||""),
+      resource_url: r.resource_url || "",
     }));
+
+    el.innerHTML = `<div style="font-size:11px;color:#666;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">${window._catnoResultaten.length} resultaten — kies er een:</div>` +
+      window._catnoResultaten.map((r,i) => `
+        <div onclick="vulIn(${i})" style="display:flex;align-items:center;gap:10px;background:#1a1a1f;border:1px solid #2a2a2a;border-radius:12px;padding:10px 12px;margin-bottom:6px;cursor:pointer;transition:all .15s"
+          onmouseover="this.style.borderColor='#c0392b';this.style.background='#1e1212'"
+          onmouseout="this.style.borderColor='#2a2a2a';this.style.background='#1a1a1f'">
+          ${r.afbeelding
+            ? `<img src="${r.afbeelding}" style="width:44px;height:44px;border-radius:6px;object-fit:cover;flex-shrink:0" onerror="this.style.display='none'">`
+            : `<div style="width:44px;height:44px;border-radius:6px;background:#111;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:20px">🎵</div>`}
+          <div style="min-width:0">
+            <div style="font-size:13px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.artiest}${r.artiest&&r.titel?" — ":""}${r.titel}</div>
+            <div style="font-size:11px;color:#888;margin-top:2px">${[r.jaar,r.land,r.formaat,r.catno].filter(Boolean).join(" · ")}</div>
+          </div>
+        </div>`).join("");
   } catch(e){
-    el.innerHTML = '<div style="color:#e74c3c;font-size:13px;padding:8px 0">⚠️ Kon Discogs niet bereiken. Probeer opnieuw.</div>';
+    el.innerHTML = `<div style="color:#e74c3c;font-size:13px;padding:8px 0">⚠️ Kon Discogs niet bereiken. Probeer opnieuw.</div>`;
   }
 }
 
 function vulIn(idx){
   const r = window._catnoResultaten[idx];
   if(!r) return;
-  if(r.artiest) document.getElementById("f_artiest").value = r.artiest;
-  if(r.titel)   document.getElementById("f_titel").value   = r.titel;
-  if(r.jaar)    document.getElementById("f_jaar").value    = r.jaar;
-  if(r.genre)   document.getElementById("f_genre").value   = r.genre;
-  if(r.land)    document.getElementById("f_land").value    = r.land;
-  if(r.label)   document.getElementById("f_label").value   = r.label;
-  // Formaat mappen
-  const fmt = r.formaat || "LP";
-  const fmtOpts = ["LP","2xLP","EP","Single (7\")", "12\" Single","Maxi-Single","Box Set","Overig"];
-  const match = fmtOpts.find(f => fmt.toLowerCase().includes(f.toLowerCase().replace(/"/g,"")));
+  if(r.artiest)    document.getElementById("f_artiest").value    = r.artiest;
+  if(r.titel)      document.getElementById("f_titel").value      = r.titel;
+  if(r.jaar)       document.getElementById("f_jaar").value       = r.jaar;
+  if(r.genre)      document.getElementById("f_genre").value      = r.genre;
+  if(r.land)       document.getElementById("f_land").value       = r.land;
+  if(r.label)      document.getElementById("f_label").value      = r.label;
+  if(r.catno)      document.getElementById("f_label").value      = (r.label?r.label+" / ":"") + r.catno;
+  if(r.afbeelding) document.getElementById("f_afbeelding").value = r.afbeelding;
+  const fmtOpts = ["LP","2xLP","EP","Single (7\")","12\" Single","Maxi-Single","Box Set","Overig"];
+  const match = fmtOpts.find(f => (r.formaat||"").toLowerCase().includes(f.toLowerCase().replace(/"/g,"")));
   if(match) document.getElementById("f_formaat").value = match;
-  document.getElementById("catnoResultaten").innerHTML = '<div style="color:#27ae60;font-size:13px;padding:6px 0">✅ Gegevens ingevuld — controleer en pas aan!</div>';
-  toonToast("✅ Gegevens ingevuld vanuit Discogs");
+  document.getElementById("catnoResultaten").innerHTML =
+    `<div style="display:flex;align-items:center;gap:10px;background:#0d2b1a;border:1px solid #27ae60;border-radius:10px;padding:10px 12px">
+      ${r.afbeelding?`<img src="${r.afbeelding}" style="width:40px;height:40px;border-radius:6px;object-fit:cover">`:""}
+      <div style="color:#27ae60;font-size:13px;font-weight:700">✅ Gegevens ingevuld — controleer en pas aan!</div>
+    </div>`;
+  toonToast("✅ Gegevens en albumhoes ingevuld!");
+}
+
+
+async function zoekWaarde(idx) {
+  const p = col[idx];
+  const el = document.getElementById("waarde_"+idx);
+  if(!el) return;
+  el.style.display = "block";
+  el.innerHTML = '<div style="color:#888;font-size:12px;padding:6px 0;display:flex;align-items:center;gap:6px"><span style="display:inline-block;width:12px;height:12px;border:2px solid #555;border-top-color:#3498db;border-radius:50%;animation:spin 0.8s linear infinite"></span> Discogs raadplegen…</div>';
+
+  try {
+    // Zoek release op Discogs
+    const zoekterm = encodeURIComponent((p.artiest||"") + " " + (p.titel||""));
+    const zoekUrl = "https://api.discogs.com/database/search?q=" + zoekterm + "&type=release&per_page=5";
+    
+    let data;
+    try {
+      const r = await fetch("https://corsproxy.io/?" + encodeURIComponent(zoekUrl));
+      data = await r.json();
+    } catch(e) {
+      throw new Error("Kon Discogs niet bereiken");
+    }
+
+    if(!data.results || data.results.length === 0) {
+      el.innerHTML = '<div style="color:#e74c3c;font-size:12px;padding:6px 0">Geen resultaten gevonden op Discogs</div>';
+      return;
+    }
+
+    // Pak beste match
+    const release = data.results[0];
+    const releaseId = release.id;
+
+    // Haal prijsinformatie op
+    const prijsUrl = "https://api.discogs.com/marketplace/price_suggestions/" + releaseId;
+    let prijsData;
+    try {
+      const r2 = await fetch("https://corsproxy.io/?" + encodeURIComponent(prijsUrl));
+      prijsData = await r2.json();
+    } catch(e) {
+      prijsData = null;
+    }
+
+    // Haal statistieken op
+    const statsUrl = "https://api.discogs.com/releases/" + releaseId + "/stats";
+    let statsData;
+    try {
+      const r3 = await fetch("https://corsproxy.io/?" + encodeURIComponent(statsUrl));
+      statsData = await r3.json();
+    } catch(e) {
+      statsData = null;
+    }
+
+    // Bouw waarde weergave
+    let html = '<div style="background:#0d1f2b;border:1px solid #2980b9;border-radius:10px;padding:10px 12px">';
+    html += '<div style="font-size:11px;color:#3498db;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">💰 Marktwaarde via Discogs</div>';
+    
+    let gevonden = false;
+
+    if(prijsData && !prijsData.message) {
+      const staat_map = {
+        "Mint (M)": "Mint",
+        "Near Mint (NM)": "Near Mint (NM)",
+        "Very Good Plus (VG+)": "Very Good Plus (VG+)",
+        "Very Good (VG)": "Very Good (VG)",
+        "Good Plus (G+)": "Good Plus (G+)",
+        "Good (G)": "Good (G)",
+        "Fair (F)": "Fair (F)",
+        "Poor (P)": "Poor (P)"
+      };
+      const staat_key = staat_map[p.staat_vinyl] || "Very Good Plus (VG+)";
+      
+      // Toon prijzen per staat
+      const prijzen = Object.entries(prijsData).slice(0,4);
+      if(prijzen.length > 0) {
+        gevonden = true;
+        prijzen.forEach(([staat, info]) => {
+          const prijs = info.value ? "€ " + parseFloat(info.value).toFixed(2) : "–";
+          const isHuidige = staat === staat_key;
+          html += `<div style="display:flex;justify-content:space-between;padding:3px 0;font-size:12px;${isHuidige?"color:#fff;font-weight:700":"color:#aaa"}">
+            <span>${staat}</span><span>${prijs}</span>
+          </div>`;
+        });
+      }
+    }
+
+    if(!gevonden && statsData) {
+      if(statsData.num_for_sale > 0) {
+        gevonden = true;
+        html += `<div style="font-size:12px;color:#aaa;padding:2px 0">Te koop: ${statsData.num_for_sale} exemplaren</div>`;
+        if(statsData.lowest_price) {
+          html += `<div style="font-size:14px;color:#fff;font-weight:700;margin-top:4px">Laagste prijs: € ${parseFloat(statsData.lowest_price).toFixed(2)}</div>`;
+        }
+      }
+    }
+
+    if(!gevonden) {
+      // Toon link naar Discogs pagina
+      const discogsLink = "https://www.discogs.com/release/" + releaseId;
+      html += `<div style="font-size:12px;color:#aaa">Geen directe prijsdata beschikbaar.</div>
+        <a href="${discogsLink}" target="_blank" style="display:inline-block;margin-top:6px;color:#3498db;font-size:12px;font-weight:700">🔗 Bekijk op Discogs</a>`;
+    } else {
+      const discogsLink = "https://www.discogs.com/release/" + releaseId;
+      html += `<a href="${discogsLink}" target="_blank" onclick="event.stopPropagation()" style="display:inline-block;margin-top:8px;color:#3498db;font-size:11px">🔗 Bekijk op Discogs →</a>`;
+    }
+
+    html += '</div>';
+    el.innerHTML = html;
+
+  } catch(e) {
+    el.innerHTML = '<div style="color:#e74c3c;font-size:12px;padding:6px 0">⚠️ ' + e.message + '</div>';
+  }
 }
 
 laad();render();
