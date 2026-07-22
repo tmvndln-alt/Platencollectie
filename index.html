@@ -536,7 +536,10 @@ function openEditForm(item) {
 }
 function verwijderPlaat(id) {
   if (!confirm('Deze plaat definitief verwijderen?')) return;
-  persistDelete(id).then(function () { if (!syncMode) render(); }).catch(function () { showGlobalError('Verwijderen is niet gelukt.'); });
+  persistDelete(id).then(function () {
+    col = col.filter(function (p) { return p.id !== id; });
+    render();
+  }).catch(function () { showGlobalError('Verwijderen is niet gelukt.'); });
 }
 
 // ---------- Foto's & AI ----------
@@ -766,11 +769,13 @@ async function plaatOpslaan() {
   };
   try {
     await persistNew(item);
+    var existingIdx = col.findIndex(function (p) { return p.id === item.id; });
+    if (existingIdx === -1) col.push(item); else col[existingIdx] = item;
     ['fa', 'ft', 'fj', 'fl', 'fg', 'fla', 'fbc', 'floc', 'fo', 'fafb'].forEach(function (id) { document.getElementById(id).value = ''; });
     document.getElementById('fwmin').value = ''; document.getElementById('fwmax').value = '';
     currentPhotos = []; editingId = null; aiPendingQuestion = ''; aiConversation = null;
     renderFotoArea();
-    if (!syncMode) render();
+    render();
     toonTab('collectie', document.getElementById('tabCollectie'));
   } catch (err) { showErr('Opslaan is niet gelukt: ' + (err && err.message ? err.message : String(err))); }
 }
@@ -789,14 +794,24 @@ function parseFirebaseConfig(raw) {
   return parsed;
 }
 function updateSyncBadge() { document.getElementById('syncBadge').textContent = syncMode ? '\u25CF gesynchroniseerd' : ''; }
-function initSync() {
+var currentConfigKey = null;
+async function initSync() {
   var config = getFirebaseConfig();
   if (unsubscribeSnapshot) { unsubscribeSnapshot(); unsubscribeSnapshot = null; }
-  if (!config) { syncMode = false; updateSyncBadge(); laad(); render(); return; }
+  if (!config) { syncMode = false; currentConfigKey = null; updateSyncBadge(); laad(); render(); return; }
   if (typeof firebase === 'undefined') { syncMode = false; updateSyncBadge(); showGlobalError('De Firebase-bibliotheek kon niet geladen worden.'); laad(); render(); return; }
+  var configKey = JSON.stringify(config);
+  if (syncMode && configKey === currentConfigKey && firestoreDb) {
+    updateSyncBadge(); clearGlobalError(); return;
+  }
   try {
-    if (!firebase.apps.length) firebase.initializeApp(config);
-    else { firebase.app().delete().catch(function () { }); firebase.initializeApp(config); }
+    if (!firebase.apps.length) {
+      firebase.initializeApp(config);
+    } else {
+      await firebase.app().delete().catch(function () { });
+      firebase.initializeApp(config);
+    }
+    currentConfigKey = configKey;
     firestoreDb = firebase.firestore();
     if (!persistenceAttempted) {
       persistenceAttempted = true;
@@ -985,8 +1000,9 @@ async function saveBatchAll() {
         fotos: [b.photoData], datumToegevoegd: new Date().toISOString(),
       };
       await persistNew(item);
+      col.push(item);
     }
-    if (!syncMode) render();
+    render();
     closeBatch();
   } catch (err) { showBatchErr('Opslaan is niet gelukt. Probeer het opnieuw.'); }
   finally { saveBtn.disabled = false; }
