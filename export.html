@@ -5,14 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Platen exporteren</title>
 <style>
-  :root { --bg:#f6f4ef; --fg:#222; --muted:#666; --accent:#2f6f5e; --card:#fff; }
-  @media (prefers-color-scheme: dark) { :root { --bg:#16181b; --fg:#eee; --muted:#aaa; --accent:#5fb39a; --card:#22252a; } }
+  :root { --bg:#f6f4ef; --fg:#222; --muted:#666; --accent:#2f6f5e; --card:#fff; --line:#ddd; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#16181b; --fg:#eee; --muted:#aaa; --accent:#5fb39a; --card:#22252a; --line:#3a3e44; } }
   body { margin:0; font-family:-apple-system,system-ui,sans-serif; background:var(--bg); color:var(--fg); }
   main { max-width:520px; margin:0 auto; padding:24px 16px; }
   .card { background:var(--card); border-radius:14px; padding:20px; }
   h1 { font-size:1.3rem; margin:0 0 8px; }
-  p { color:var(--muted); line-height:1.45; }
-  button { width:100%; padding:14px; border:0; border-radius:10px; background:var(--accent); color:#fff; font-size:1rem; font-weight:600; }
+  p, label { color:var(--muted); line-height:1.45; }
+  label { display:block; font-size:.9rem; margin:16px 0 6px; }
+  textarea { width:100%; box-sizing:border-box; min-height:140px; font:13px ui-monospace,monospace; padding:10px;
+             border:1px solid var(--line); border-radius:10px; background:var(--bg); color:var(--fg); }
+  button { width:100%; margin-top:14px; padding:14px; border:0; border-radius:10px; background:var(--accent); color:#fff; font-size:1rem; font-weight:600; }
   button:disabled { opacity:.5; }
   #status { margin-top:16px; color:var(--fg); white-space:pre-line; }
 </style>
@@ -22,7 +25,8 @@
   <div class="card">
     <h1>Platencollectie exporteren</h1>
     <p>Haalt al je platen <b>inclusief foto's</b> op uit je Firebase-synchronisatie en downloadt ze als één JSON-bestand. Er wordt niets gewijzigd of verwijderd.</p>
-    <p>Open deze pagina op het apparaat waarop je platen-app al gesynchroniseerd is.</p>
+    <label for="cfg">Firebase-configuratie (alleen nodig als hij hieronder leeg blijft — kopieer hem uit de instellingen van je platen-app)</label>
+    <textarea id="cfg" placeholder="{ apiKey: &quot;...&quot;, authDomain: &quot;...&quot;, projectId: &quot;...&quot;, ... }"></textarea>
     <button id="btn">Exporteer naar JSON</button>
     <div id="status"></div>
   </div>
@@ -34,8 +38,28 @@ var CONFIG_KEY = 'platen_firebase_config';
 var LOCAL_KEY = 'platen_v10';
 var statusEl = document.getElementById('status');
 var btn = document.getElementById('btn');
+var cfgEl = document.getElementById('cfg');
 
 function setStatus(t) { statusEl.textContent = t; }
+
+// Zelfde ruime parser als de platen-app: accepteert JSON én het JS-object uit de Firebase-console.
+function parseConfig(raw) {
+  var t = (raw || '').trim(); if (!t) return null;
+  t = t.replace(/^\s*\/\/.*$/gm, '');
+  t = t.replace(/[“”„‟]/g, '"').replace(/[‘’‚‛]/g, "'");
+  var s = t.indexOf('{'), e = t.lastIndexOf('}');
+  if (s === -1 || e === -1) throw new Error('geen { ... } gevonden in de configuratie');
+  var obj = new Function('return (' + t.slice(s, e + 1) + ');')();
+  if (!obj || !obj.apiKey || !obj.projectId) throw new Error('configuratie mist apiKey of projectId');
+  return obj;
+}
+
+// Vooraf invullen met wat deze browser al weet
+try {
+  var opgeslagen = localStorage.getItem(CONFIG_KEY);
+  if (opgeslagen) cfgEl.value = JSON.stringify(JSON.parse(opgeslagen), null, 2);
+} catch (e) {}
+if (!cfgEl.value) setStatus('In deze browser is geen Firebase-configuratie gevonden. Plak hem hierboven.');
 
 function download(data) {
   var blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
@@ -54,27 +78,32 @@ function telFotos(platen) {
 btn.onclick = async function () {
   btn.disabled = true;
   try {
-    var raw = null, config = null;
-    try { raw = localStorage.getItem(CONFIG_KEY); } catch (e) {}
-    if (raw) { try { config = JSON.parse(raw); } catch (e) {} }
-
-    var platen;
-    if (config && config.apiKey && config.projectId) {
-      setStatus('Verbinden met Firebase…');
-      firebase.initializeApp(config);
+    var config = parseConfig(cfgEl.value);
+    var platen = [];
+    var bron = '';
+    if (config) {
+      setStatus('Verbinden met Firebase-project "' + config.projectId + '"…');
+      if (!firebase.apps.length) firebase.initializeApp(config);
       var snap = await firebase.firestore().collection('platen').get();
       platen = snap.docs.map(function (d) { return d.data(); });
+      bron = 'Firebase-project "' + config.projectId + '"';
     } else {
-      setStatus('Geen Firebase-instellingen gevonden, lokale gegevens worden gebruikt…');
       var lokaal = null;
       try { lokaal = localStorage.getItem(LOCAL_KEY); } catch (e) {}
       platen = lokaal ? JSON.parse(lokaal) : [];
+      bron = 'lokale opslag van deze browser';
     }
 
-    if (!platen.length) { setStatus('Geen platen gevonden. Open deze pagina op het apparaat waar je app gesynchroniseerd is.'); btn.disabled = false; return; }
+    if (!platen.length) {
+      setStatus('Geen platen gevonden in ' + bron + '.\n' +
+        (config ? 'De verbinding werkte wel, maar de verzameling "platen" is leeg in dit project.' :
+                  'Plak de Firebase-configuratie uit je platen-app hierboven en probeer opnieuw.'));
+      btn.disabled = false; return;
+    }
 
     download(platen);
-    setStatus(platen.length + ' platen geëxporteerd, waarvan ' + telFotos(platen) + ' met foto.\nHet bestand staat in je Downloads.');
+    setStatus(platen.length + ' platen geëxporteerd uit ' + bron + ', waarvan ' + telFotos(platen) +
+              ' met foto.\nHet bestand staat in je Downloads.');
   } catch (err) {
     setStatus('Exporteren mislukt: ' + (err && err.message ? err.message : err));
   }
