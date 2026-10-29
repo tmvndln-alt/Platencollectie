@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Platen exporteren</title>
+<style>
+  :root { --bg:#f6f4ef; --fg:#222; --muted:#666; --accent:#2f6f5e; --card:#fff; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#16181b; --fg:#eee; --muted:#aaa; --accent:#5fb39a; --card:#22252a; } }
+  body { margin:0; font-family:-apple-system,system-ui,sans-serif; background:var(--bg); color:var(--fg); }
+  main { max-width:520px; margin:0 auto; padding:24px 16px; }
+  .card { background:var(--card); border-radius:14px; padding:20px; }
+  h1 { font-size:1.3rem; margin:0 0 8px; }
+  p { color:var(--muted); line-height:1.45; }
+  button { width:100%; padding:14px; border:0; border-radius:10px; background:var(--accent); color:#fff; font-size:1rem; font-weight:600; }
+  button:disabled { opacity:.5; }
+  #status { margin-top:16px; color:var(--fg); white-space:pre-line; }
+</style>
+</head>
+<body>
+<main>
+  <div class="card">
+    <h1>Platencollectie exporteren</h1>
+    <p>Haalt al je platen <b>inclusief foto's</b> op uit je Firebase-synchronisatie en downloadt ze als één JSON-bestand. Er wordt niets gewijzigd of verwijderd.</p>
+    <p>Open deze pagina op het apparaat waarop je platen-app al gesynchroniseerd is.</p>
+    <button id="btn">Exporteer naar JSON</button>
+    <div id="status"></div>
+  </div>
+</main>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+var CONFIG_KEY = 'platen_firebase_config';
+var LOCAL_KEY = 'platen_v10';
+var statusEl = document.getElementById('status');
+var btn = document.getElementById('btn');
+
+function setStatus(t) { statusEl.textContent = t; }
+
+function download(data) {
+  var blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'platen-met-fotos-' + new Date().toISOString().slice(0, 10) + '.json';
+  document.body.appendChild(a); a.click(); a.remove();
+}
+
+function telFotos(platen) {
+  return platen.filter(function (p) {
+    return (Array.isArray(p.fotos) && p.fotos.length) || p.foto || p.afbeelding;
+  }).length;
+}
+
+btn.onclick = async function () {
+  btn.disabled = true;
+  try {
+    var raw = null, config = null;
+    try { raw = localStorage.getItem(CONFIG_KEY); } catch (e) {}
+    if (raw) { try { config = JSON.parse(raw); } catch (e) {} }
+
+    var platen;
+    if (config && config.apiKey && config.projectId) {
+      setStatus('Verbinden met Firebase…');
+      firebase.initializeApp(config);
+      var snap = await firebase.firestore().collection('platen').get();
+      platen = snap.docs.map(function (d) { return d.data(); });
+    } else {
+      setStatus('Geen Firebase-instellingen gevonden, lokale gegevens worden gebruikt…');
+      var lokaal = null;
+      try { lokaal = localStorage.getItem(LOCAL_KEY); } catch (e) {}
+      platen = lokaal ? JSON.parse(lokaal) : [];
+    }
+
+    if (!platen.length) { setStatus('Geen platen gevonden. Open deze pagina op het apparaat waar je app gesynchroniseerd is.'); btn.disabled = false; return; }
+
+    download(platen);
+    setStatus(platen.length + ' platen geëxporteerd, waarvan ' + telFotos(platen) + ' met foto.\nHet bestand staat in je Downloads.');
+  } catch (err) {
+    setStatus('Exporteren mislukt: ' + (err && err.message ? err.message : err));
+  }
+  btn.disabled = false;
+};
+</script>
+</body>
+</html>
